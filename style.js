@@ -433,6 +433,7 @@ Silahkan @${m.mentionedJid[0].split`@`[0]} untuk ketik terima/tolak`
             break	    
             case 'sc': {
                 m.reply('ngak ada sc abis')
+                 }
             break
             case 'chat': {
                 if (!isCreator) throw mess.owner
