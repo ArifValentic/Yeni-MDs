@@ -1000,7 +1000,7 @@ break
                                     id: 'sc'
                                 }
                             }]
-                      fatihgans = fs.readFileSync('./lib/style.jpg')
+                      fatihgans = global.thumb
                       let txt = `「 Broadcast Bot 」\n\n${text}`
                       style.send5ButImg(i, txt, style.user.name, fatihgans, btn)
                     }
@@ -1040,7 +1040,7 @@ break
                                     id: 'sc'
                                 }
                             }]
-                      fatihgans = fs.readFileSync('./lib/style.jpg')
+                      fatihgans = global.thumb
                       let txt = `「 Broadcast Bot 」\n\n${text}`
                       style.send5ButImg(yoi, txt, style.user.name, fatihgans, btn)
 		}
