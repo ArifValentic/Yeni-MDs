@@ -432,8 +432,7 @@ Silahkan @${m.mentionedJid[0].split`@`[0]} untuk ketik terima/tolak`
             }
             break	    
             case 'sc': {
-                m.reply('Script : https://www.google.com\n\n Dont Forget Give Star\n\nDonate : 6281615075793 (Link Aja)\nSaweria : https://saweria.co/DikaArdnt\nPaypal : https://www.paypal.me/Cakhaho\n\n Dont Forget Donate')
-            }
+                m.reply('ngak ada sc abis')
             break
             case 'chat': {
                 if (!isCreator) throw mess.owner
