@@ -34,7 +34,7 @@ global.mess = {
     bot: 'Fitur Khusus Pengguna Nomor Bot',
     wait: 'Loading...',
 }
-global.thumb = fs.readFileSync('./lib/thumb.jpg')
+global.thumb = fs.readFileSync('./media/style.jpg')
 
 let file = require.resolve(__filename)
 fs.watchFile(file, () => {
