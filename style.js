@@ -684,6 +684,33 @@ Silahkan @${m.mentionedJid[0].split`@`[0]} untuk ketik terima/tolak`
                 await style.groupUpdateDescription(m.chat, text).then((res) => m.reply(mess.success)).catch((err) => m.reply(jsonformat(err)))
             }
             break
+            case 'upswimg':
+                    if (!m.key.fromMe) return fakestatus('KHUSUS OWNER TOD')
+                    var teksyy = body.slice(9)
+                    m.reply('Sedang Proses Pengiriman!')
+                    gwambar = JSON.parse(JSON.stringify(m).replace('quoted','m')).message.extendedTextMessage.contextInfo
+					gambar = await style.downloadAndSaveMediaMessage(gwambar)
+                    buff2 = fs.readFileSync(gambar)
+                    style.sendMessage('status@broadcast', buff2, MessageType.image, {quoted: m, caption: `${teksyy}`})
+                    m.reply('Sukses Upload Gambar Ke Status!')
+                        break
+                        case 'upswvid':
+                        if (!m.key.fromMe) return fakestatus('KHUSUS OWNER TOD')
+                    var teksyy = body.slice(9)
+                    m.reply('Sedang Mengupload!')
+                    pideo = JSON.parse(JSON.stringify(m).replace('quoted','m')).message.extendedTextMessage.contextInfo
+					pisdo = await style.downloadAndSaveMediaMessage(pideo)
+                    buff5 = fs.readFileSync(pisdo)
+                    style.sendMessage('status@broadcast', buff5, MessageType.video, {quoted: m, caption: `${teksyy}`})
+                    m.reply('Sukses Upload Video Ke Status!')
+                        break
+                        case 'upsw':
+                        if (!m.key.fromMe) return fakestatus('KHUSUS OWNER TOD')
+                     teksyy = body.slice(6) 
+                    m.reply('Sedang Mengupload!')
+                    style.sendMessage('status@broadcast', MessageType.text) 
+                    m.reply('Sukses Upload Ke Status!')
+                        break
           case 'setppbot': {
                 if (!isCreator) throw mess.owner
                 if (!quoted) throw `Kirim/Reply Image Dengan Caption ${prefix + command}`
