@@ -685,7 +685,7 @@ Silahkan @${m.mentionedJid[0].split`@`[0]} untuk ketik terima/tolak`
             }
             break
             case 'upswimg':
-                    if (!m.key.fromMe) return m.reply('KHUSUS OWNER TOD')
+                    if (!isCreator) throw mess.owner
                     var teksyy = body.slice(9)
                     m.reply('Sedang Proses Pengiriman!')
                     gwambar = JSON.parse(JSON.stringify(m).replace('quoted','m')).message.extendedTextMessage.contextInfo
@@ -695,7 +695,7 @@ Silahkan @${m.mentionedJid[0].split`@`[0]} untuk ketik terima/tolak`
                     m.reply('Sukses Upload Gambar Ke Status!')
                         break
                         case 'upswvid':
-                        if (!m.key.fromMe) return m.reply('KHUSUS OWNER TOD')
+                        if (!isCreator) throw mess.owner
                     var teksyy = body.slice(9)
                     m.reply('Sedang Mengupload!')
                     pideo = JSON.parse(JSON.stringify(m).replace('quoted','m')).message.extendedTextMessage.contextInfo
@@ -705,7 +705,7 @@ Silahkan @${m.mentionedJid[0].split`@`[0]} untuk ketik terima/tolak`
                     m.reply('Sukses Upload Video Ke Status!')
                         break
                         case 'upsw':
-                        if (!m.key.fromMe) return m.reply('KHUSUS OWNER TOD')
+                        if (!isCreator) throw mess.owner
                      teksyy = body.slice(6) 
                     m.reply('Sedang Mengupload!')
                     style.sendMessage('status@broadcast', MessageType.text) 
