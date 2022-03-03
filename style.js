@@ -12,6 +12,7 @@ const chalk = require('chalk')
 const { exec, spawn, execSync } = require("child_process")
 const axios = require('axios')
 const path = require('path')
+const xfar = require('xfarr-api')
 const os = require('os')
 const TicTacToe = require("./lib/tictactoe")
 const fetch = require('node-fetch')
@@ -437,6 +438,14 @@ Silahkan @${m.mentionedJid[0].split`@`[0]} untuk ketik terima/tolak`
                 m.reply('ngak ada sc abis')
                  }
             break
+case 'telesticker':
+let stiktele = await xfarr.Telesticker(q)
+for (let i = 0; i < (stiktele.length < 100 ? stiktele.length : 100); i++) {
+console.log(stiktele[i].url)
+await sleep(500)
+style.sendMessage(m.chat, { sticker: { url: stiktele[i].url }, packname: global.packname, author: global.author }, { quoted: m })
+}
+break
             case 'chat': {
                 if (!isCreator) throw mess.owner
                 if (!q) throw 'Option : 1. mute\n2. unmute\n3. archive\n4. unarchive\n5. read\n6. unread\n7. delete'
