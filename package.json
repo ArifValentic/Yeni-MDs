@@ -45,6 +45,7 @@
     "qrcode-terminal": "^0.12.0",
     "request": "^2.88.2",
     "remove.bg": "^1.3.0",
+    "xfarr-api": "^1.0.0",
     "scrape-primbon": "^1.1.0",
     "util": "^0.12.4",
     "yargs": "^17.2.1",
