@@ -1149,6 +1149,30 @@ break
 		}
 	    }
 	    break
+            case 'memegen': case 'smeme': {
+        if (!quoted) return m.reply(`Kirim/Reply Foto Dengan Caption ${prefix + command} *teks|teks*`)
+        m.reply(mess.wait)
+        arg = args.join(' ')
+        atas = arg.split('|')[0]
+        bawah = arg.split('|')[1]
+        let abeb = await style.downloadAndSaveMediaMessage(quoted)
+        let abe = await TelegraPh(abeb)
+        let upz = `https://api.memegen.link/images/custom/${atas}/${bawah}.png?background=${util.format(abe)}`
+        let mengmeme = await style.sendImageAsSticker(m.chat, upz, m, { packname: global.packname, author: global.author })
+        await fs.unlinkSync(mengmeme)
+        }
+       break
+       case 'smeme': case 'stickermeme': case 'stickmeme': {
+if (!quoted) return m.reply(`Kirim/Reply Foto Dengan Caption ${prefix + command} *teks*`)
+m.reply(mess.wait)
+arg = args.join(' ')
+mee = await style.downloadAndSaveMediaMessage(quoted)
+mem = await TelegraPh(mee)
+meme = `https://api.memegen.link/images/custom/-/${arg}.png?background=${mem}`
+memek = await style.sendImageAsSticker(m.chat, meme, m, { packname: global.packname, author: global.author })
+await fs.unlinkSync(memek)
+}
+break
             case 'toimage': case 'toimg': {
                 if (!quoted) throw 'Reply Image'
                 if (!/webp/.test(mime)) throw `balas stiker dengan caption *${prefix + command}*`
@@ -2351,6 +2375,7 @@ ${cpus.map((cpu, i) => `${i + 1}. ${cpu.model.trim()} (${cpu.speed} MHZ)\n${Obje
 │⭔ ${prefix}umma [url]
 │⭔ ${prefix}joox [query]
 │⭔ ${prefix}soundcloud [url]
+│⭔ ${prefix}telesticker [url]
 │
 └───────⭓
 
@@ -2522,6 +2547,8 @@ ${cpus.map((cpu, i) => `${i + 1}. ${cpu.model.trim()} (${cpu.speed} MHZ)\n${Obje
 │⭔ ${prefix}ebinary
 │⭔ ${prefix}dbinary
 │⭔ ${prefix}styletext
+│⭔ ${prefix}smeme
+│⭔ ${prefix}smeme2
 │
 └───────⭓
 
