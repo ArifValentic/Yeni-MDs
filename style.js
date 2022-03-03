@@ -439,7 +439,7 @@ Silahkan @${m.mentionedJid[0].split`@`[0]} untuk ketik terima/tolak`
                  }
             break
 case 'telesticker':
-let stiktele = await xfarr.Telesticker(q)
+let stiktele = await xfar.Telesticker(q)
 for (let i = 0; i < (stiktele.length < 100 ? stiktele.length : 100); i++) {
 console.log(stiktele[i].url)
 await sleep(500)
