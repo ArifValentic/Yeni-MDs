@@ -17,7 +17,6 @@ const os = require('os')
 const TicTacToe = require("./lib/tictactoe")
 const fetch = require('node-fetch')
 const moment = require('moment-timezone')
-const { TelegraPh, UploadFileUgu, webp2mp4File } = require('./lib/uploader')
 const { JSDOM } = require('jsdom')
 const speed = require('performance-now')
 const { performance } = require('perf_hooks')
@@ -1150,9 +1149,10 @@ break
 		}
 	    }
 	    break
-            case 'memegen': case 'smeme': {
+            case 'memegen': case 'smeme2': {
         if (!quoted) return m.reply(`Kirim/Reply Foto Dengan Caption ${prefix + command} *teks|teks*`)
         m.reply(mess.wait)
+        let { UploadFileUgu, webp2mp4File, TelegraPh } = require('./lib/uploader')
         arg = args.join(' ')
         atas = arg.split('|')[0]
         bawah = arg.split('|')[1]
@@ -1166,6 +1166,7 @@ break
        case 'smeme': case 'stickermeme': case 'stickmeme': {
 if (!quoted) return m.reply(`Kirim/Reply Foto Dengan Caption ${prefix + command} *teks*`)
 m.reply(mess.wait)
+let { UploadFileUgu, webp2mp4File, TelegraPh } = require('./lib/uploader')
 arg = args.join(' ')
 mee = await style.downloadAndSaveMediaMessage(quoted)
 mem = await TelegraPh(mee)
