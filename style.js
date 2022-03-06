@@ -1844,6 +1844,46 @@ break
                 style.sendMessage(m.chat, { audio: cnvrt, mimetype: 'audio/mpeg'}, { quoted: msg })
             }
             break
+            case 'ttnowm': case 'tiktokmp3':
+	m.reply('tunggu anta')
+	kntl = `${q}`
+	mmk = await TiktokDownloader(kntl)
+	link_bkp = mmk.result.nowatermark
+	sendFileFromUrl(from,link_bkp,'Done',m)
+	 let buttons = [
+                    {buttonId: `ttwm ${text}`, buttonText: {displayText: '► With Watermark'}, type: 1},
+                    {buttonId: `ttmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
+                ]
+                let buttonMessage = {
+                    video: { url: mmk.result.nowatermark },
+                    caption: `Download From ${text}`,
+                    footer: 'Press The Button Below',
+                    buttons: buttons,
+                    headerType: 5
+                }
+                style.sendMessage(m.chat, buttonMessage, { quoted: m })
+  
+	break
+	case 'ttwm': case 'tiktokwm':
+	m.reply('sabar woi')
+	kntl = `${q}`
+	mmk = await TiktokDownloader(kntl)
+	link_bkp = mmk.result.watermark
+	sendFileFromUrl(from,link_bkp,'Done',m)
+	let buttons = [
+                    {buttonId: `ttnowm ${text}`, buttonText: {displayText: '► No Watermark'}, type: 1},
+                    {buttonId: `ttmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
+                ]
+                let buttonMessage = {
+                    video: { url: mmk.result.nowatermark },
+                    caption: `Download From ${text}`,
+                    footer: 'Press The Button Below',
+                    buttons: buttons,
+                    headerType: 5
+                }
+                style.sendMessage(m.chat, buttonMessage, { quoted: m })
+  
+	break
 	        case 'instagram': case 'ig': case 'igdl': {
                 if (!text) throw 'No Query Url!'
                 m.reply(mess.wait)
