@@ -1812,15 +1812,15 @@ break
             case 'ttnowm': 
 	m.reply('tunggu anta')
 	kntl = `${q}`
-	mmk = await TiktokDownloader(kntl)
-        link_bkp = mmk.result.nowatermark
-        sendFileFromUrl(from,link_bkp,'Done',m)
+	asu = await TiktokDownloader(kntl)
+        anu = asu.result.nowatermark
+        sendFileFromUrl(from,anu,'Done',m)
 	 let buttons = [
                     {buttonId: `tiktokwm ${text}`, buttonText: {displayText: '► With Watermark'}, type: 1},
                     {buttonId: `tiktokmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
                 ]
                 let buttonMessage = {
-                    video: { url: mmk.result.nowatermark },
+                    video: { url: asu.result.nowatermark },
                     caption: `Download From ${text}`,
                     footer: 'Press The Button Below',
                     buttons: buttons,
@@ -1829,7 +1829,7 @@ break
                 style.sendMessage(m.chat, buttonMessage, { quoted: m })
   
 	break
-	        case 'tiktok': case 'tiktoknowm': {
+	        /*case 'tiktok': case 'tiktoknowm': {
                 if (!text) throw 'Masukkan Query Link!'
                 m.reply(mess.wait)
                 let anu = await fetchJson(api('zenz', '/downloader/tiktok', { url: text }, 'apikey'))
@@ -1846,7 +1846,7 @@ break
                 }
                 style.sendMessage(m.chat, buttonMessage, { quoted: m })
             }
-            break
+            break*/
             case 'tiktokwm': case 'tiktokwatermark': {
                 if (!text) throw 'Masukkan Query Link!'
                 m.reply(mess.wait)
