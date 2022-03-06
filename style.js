@@ -1813,8 +1813,7 @@ break
     if (!text) throw 'Masukkan Query Link!'
 	m.reply('tunggu anta')
 	kntl = `${q}`
-	asu = await TiktokDownloader(kntl)
-	    anuy = asu.result.watermark
+	asu = await TiktokDownloader(kntl)	    
         anu = asu.result.nowatermark
         sendFileFromUrl(from,anu,'Done',m)
 	 let buttons = [
@@ -1822,8 +1821,7 @@ break
                     {buttonId: `tiktokmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
                 ]
                 let buttonMessage = {
-                    video: { url: asu.result.nowatermark },
-                    video: { url: anuy.result.watermark },
+                    video: { url: asu.result.nowatermark },                    
                     caption: `Download From ${text}`,
                     footer: 'Press The Button Below',
                     buttons: buttons,
