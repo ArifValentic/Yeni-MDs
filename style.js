@@ -18,6 +18,7 @@ const TicTacToe = require("./lib/tictactoe")
 const fetch = require('node-fetch')
 const moment = require('moment-timezone')
 const { JSDOM } = require('jsdom')
+const {TiktokDownloader} = require('./lib/tiktokdl')
 const speed = require('performance-now')
 const { performance } = require('perf_hooks')
 const { Primbon } = require('scrape-primbon')
@@ -1810,43 +1811,7 @@ break
                 if (anu.status == false) return m.reply(anu.message)
                 style.sendText(m.chat, `⭔ *Hasil :* ${anu.message}`, m)
             }
-            break
-	        case 'tiktok': case 'tiktoknowm': {
-                if (!text) throw 'Masukkan Query Link!'
-                m.reply(mess.wait)
-                let anu = await fetchJson(api('zenz', '/downloader/tiktok', { url: text }, 'apikey'))
-                let buttons = [
-                    {buttonId: `tiktokwm ${text}`, buttonText: {displayText: '► With Watermark'}, type: 1},
-                    {buttonId: `tiktokmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
-                ]
-                let buttonMessage = {
-                    video: { url: anu.result.nowatermark },
-                    caption: `Download From ${text}`,
-                    footer: 'Press The Button Below',
-                    buttons: buttons,
-                    headerType: 5
-                }
-                style.sendMessage(m.chat, buttonMessage, { quoted: m })
-            }
-            break
-            case 'tiktokwm': case 'tiktokwatermark': {
-                if (!text) throw 'Masukkan Query Link!'
-                m.reply(mess.wait)
-                let anu = await fetchJson(api('zenz', '/downloader/tiktok', { url: text }, 'apikey'))
-                let buttons = [
-                    {buttonId: `tiktoknowm ${text}`, buttonText: {displayText: '► No Watermark'}, type: 1},
-                    {buttonId: `tiktokmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
-                ]
-                let buttonMessage = {
-                    video: { url: anu.result.watermark },
-                    caption: `Download From ${text}`,
-                    footer: 'Press The Button Below',
-                    buttons: buttons,
-                    headerType: 5
-                }
-                style.sendMessage(m.chat, buttonMessage, { quoted: m })
-            }
-            break
+            break	        
             case 'tiktokmp3': case 'tiktokaudio': {
                 if (!text) throw 'Masukkan Query Link!'
                 m.reply(mess.wait)
@@ -1870,7 +1835,6 @@ break
             break
             case 'ttnowm': case 'tiktokmp3':
 	m.reply('tunggu anta')
-	let {TiktokDownloader} = require('./lib/tiktokdl')
 	kntl = `${q}`
 	mmk = await TiktokDownloader(kntl)
 	link_bkp = mmk.result.nowatermark
@@ -1891,7 +1855,6 @@ break
 	break
 	case 'ttwm': case 'tiktokwm':
 	m.reply('sabar woi')
-	let {TiktokDownloader} = require('./lib/tiktokdl')
 	kntl = `${q}`
 	mmk = await TiktokDownloader(kntl)
 	link_bkp = mmk.result.watermark
