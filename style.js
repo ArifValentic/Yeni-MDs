@@ -14,7 +14,6 @@ const axios = require('axios')
 const path = require('path')
 const xfar = require('xfarr-api')
 const os = require('os')
-const {TiktokDownloader} = require('./lib/tiktokdl')
 const TicTacToe = require("./lib/tictactoe")
 const fetch = require('node-fetch')
 const moment = require('moment-timezone')
@@ -59,35 +58,10 @@ module.exports = style = async (style, m, chatUpdate, store) => {
         const isCreator = [botNumber, ...global.owner].map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender)
         const itsMe = m.sender == botNumber ? true : false
         const text = q = args.join(" ")
-        const from = m.key.remoteJid
         const quoted = m.quoted ? m.quoted : m
         const mime = (quoted.msg || quoted).mimetype || ''
 	    const isMedia = /image|video|sticker|audio/.test(mime)
 	
-           
-	   //button
-	     const sendFileFromUrl = async (from, url, caption, m, men) => {
-            let mime = '';
-            let res = await axios.head(url)
-            mime = res.headers['content-type']
-            if (mime.split("/")[1] === "gif") {
-                return style.sendMessage(from, { video: await getBuffer(url), caption: caption, gifPlayback: true, mentions: men ? men : []}, {quoted: m})
-                }
-            let type = mime.split("/")[0]+"Message"
-            if(mime.split("/")[0] === "image"){
-                return style.sendMessage(from, { image: await getBuffer(url), caption: caption, mentions: men ? men : []}, {quoted: m})
-            } else if(mime.split("/")[0] === "video"){
-                return style.sendMessage(from, { video: await getBuffer(url), caption: caption, mentions: men ? men : []}, {quoted: m})
-            } else if(mime.split("/")[0] === "audio"){
-                return style.sendMessage(from, { audio: await getBuffer(url), caption: caption, mentions: men ? men : [], mimetype: 'audio/mpeg'}, {quoted: m })
-            } else {
-                return style.sendMessage(from, { document: await getBuffer(url), mimetype: mime, caption: caption, mentions: men ? men : []}, {quoted: m })
-            }
-        }
-        const reply = (teks) => {
-            style.sendMessage(from, teks, text, {quoted:m})
-        }
-
         // Group
         const groupMetadata = m.isGroup ? await style.groupMetadata(m.chat).catch(e => {}) : ''
         const groupName = m.isGroup ? groupMetadata.subject : ''
@@ -1189,18 +1163,18 @@ break
         await fs.unlinkSync(mengmeme)
         }
        break
-       case 'smeme': case 'stickermeme': case 'stickmeme': {
-if (!quoted) return m.reply(`Kirim/Reply Foto Dengan Caption ${prefix + command} *teks*`)
-m.reply(mess.wait)
-let { UploadFileUgu, webp2mp4File, TelegraPh } = require('./lib/uploader')
-arg = args.join(' ')
-mee = await style.downloadAndSaveMediaMessage(quoted)
-mem = await TelegraPh(mee)
-meme = `https://api.memegen.link/images/custom/-/${arg}.png?background=${mem}`
-memek = await style.sendImageAsSticker(m.chat, meme, m, { packname: global.packname, author: global.author })
-await fs.unlinkSync(memek)
-}
-break
+     case 'smeme': case 'stickermeme': case 'stickmeme': {
+       if (!quoted) return m.reply(`Kirim/Reply Foto Dengan Caption ${prefix + command} *teks*`)
+       m.reply(mess.wait)
+       let { UploadFileUgu, webp2mp4File, TelegraPh } = require('./lib/uploader')
+       arg = args.join(' ')
+       mee = await style.downloadAndSaveMediaMessage(quoted)
+       mem = await TelegraPh(mee)
+       meme = `https://api.memegen.link/images/custom/-/${arg}.png?background=${mem}`
+       memek = await style.sendImageAsSticker(m.chat, meme, m, { packname: global.packname, author: global.author })
+       await fs.unlinkSync(memek)
+       }
+     break
             case 'toimage': case 'toimg': {
                 if (!quoted) throw 'Reply Image'
                 if (!/webp/.test(mime)) throw `balas stiker dengan caption *${prefix + command}*`
@@ -1813,46 +1787,63 @@ break
                 style.sendText(m.chat, `⭔ *Hasil :* ${anu.message}`, m)
             }
             break
-      case 'ttnowm': case 'tiktoknowm':
-	m.reply('tunggu anta')
-	kntl = `${q}`
-	mmk = await TiktokDownloader(kntl)
-        link_bkp = mmk.result.nowatermark
-        sendFileFromUrl(from,link_bkp,'Done',m)
-	 let buttons = [
+	        case 'tiktok': case 'tiktoknowm': {
+                if (!text) throw 'Masukkan Query Link!'
+                m.reply(mess.wait)
+                let anu = await fetchJson(api('zenz', '/downloader/tiktok', { url: text }, 'apikey'))
+                let buttons = [
                     {buttonId: `tiktokwm ${text}`, buttonText: {displayText: '► With Watermark'}, type: 1},
                     {buttonId: `tiktokmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
                 ]
                 let buttonMessage = {
-                    video: { url: mmk.result.nowatermark },
+                    video: { url: anu.result.nowatermark },
                     caption: `Download From ${text}`,
                     footer: 'Press The Button Below',
                     buttons: buttons,
                     headerType: 5
                 }
                 style.sendMessage(m.chat, buttonMessage, { quoted: m })
-  
-	break
-	case 'ttwm': case 'tiktokwm':
-	m.reply('sabar woi')
-	kntl = `${q}`
-	mmk = await TiktokDownloader(kntl)	
-        link_bkp = mmk.result.watermark
-        sendFileFromUrl(from,link_bkp,'Done',m)
-	let buttons = [
+            }
+            break
+            case 'tiktokwm': case 'tiktokwatermark': {
+                if (!text) throw 'Masukkan Query Link!'
+                m.reply(mess.wait)
+                let anu = await fetchJson(api('zenz', '/downloader/tiktok', { url: text }, 'apikey'))
+                let buttons = [
                     {buttonId: `tiktoknowm ${text}`, buttonText: {displayText: '► No Watermark'}, type: 1},
                     {buttonId: `tiktokmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
                 ]
-	let buttonMessage = {
-                    video: { url: mmk.result.watermark },
+                let buttonMessage = {
+                    video: { url: anu.result.watermark },
                     caption: `Download From ${text}`,
                     footer: 'Press The Button Below',
                     buttons: buttons,
                     headerType: 5
                 }
                 style.sendMessage(m.chat, buttonMessage, { quoted: m })
+            }
             break
-
+            case 'tiktokmp3': case 'tiktokaudio': {
+                if (!text) throw 'Masukkan Query Link!'
+                m.reply(mess.wait)
+                let anu = await fetchJson(api('zenz', '/downloader/tiktok', { url: text }, 'apikey'))
+                let buttons = [
+                    {buttonId: `tiktoknowm ${text}`, buttonText: {displayText: '► No Watermark'}, type: 1},
+                    {buttonId: `tiktokwm ${text}`, buttonText: {displayText: '► With Watermark'}, type: 1}
+                ]
+                let buttonMessage = {
+                    text: `Download From ${text}`,
+                    footer: 'Press The Button Below',
+                    buttons: buttons,
+                    headerType: 2
+                }
+                let msg = await style.sendMessage(m.chat, buttonMessage, { quoted: m })
+		let { toAudio } = require('./lib/converter')
+		let nganu = await getBuffer(anu.result.nowatermark)
+		let cnvrt = await toAudio(nganu, 'mp4')
+                style.sendMessage(m.chat, { audio: cnvrt, mimetype: 'audio/mpeg'}, { quoted: msg })
+            }
+            break
 	        case 'instagram': case 'ig': case 'igdl': {
                 if (!text) throw 'No Query Url!'
                 m.reply(mess.wait)
