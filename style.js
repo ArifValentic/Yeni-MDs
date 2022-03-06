@@ -1820,8 +1820,8 @@ break
         link_bkp = mmk.result.nowatermark
         sendFileFromUrl(from,link_bkp,'Done',m)
 	 let buttons = [
-                    {buttonId: `ttwm ${text}`, buttonText: {displayText: '► With Watermark'}, type: 1},
-                    {buttonId: `ttmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
+                    {buttonId: `tiktokwm ${text}`, buttonText: {displayText: '► With Watermark'}, type: 1},
+                    {buttonId: `tiktokmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
                 ]
                 let buttonMessage = {
                     video: { url: mmk.result.nowatermark },
@@ -1840,31 +1840,11 @@ break
         link_bkp = mmk.result.watermark
         sendFileFromUrl(from,link_bkp,'Done',m)
 	let buttons = [
-                    {buttonId: `ttnowm ${text}`, buttonText: {displayText: '► No Watermark'}, type: 1},
-                    {buttonId: `ttmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
+                    {buttonId: `tiktoknowm ${text}`, buttonText: {displayText: '► No Watermark'}, type: 1},
+                    {buttonId: `tiktokmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
                 ]
 	let buttonMessage = {
                     video: { url: mmk.result.watermark },
-                    caption: `Download From ${text}`,
-                    footer: 'Press The Button Below',
-                    buttons: buttons,
-                    headerType: 5
-                }
-                style.sendMessage(m.chat, buttonMessage, { quoted: m })
-            break
-           
-	case 'ttmp3': case 'tiktokmp3':
-	m.reply('sabar woi')
-	kntl = `${q}`
-	mmk = await TiktokDownloader(kntl)
-        link_bkp = mmk.result.audio
-        sendFileFromUrl(from,link_bkp,'Done',m)
-	let buttons = [
-                    {buttonId: `ttwm ${text}`, buttonText: {displayText: '► With Watermark'}, type: 1},
-                    {buttonId: `ttnowm ${text}`, buttonText: {displayText: '► No Watermark'}, type: 1}
-                ]
-	let buttonMessage = {
-                    video: { url: mmk.result.audio },
                     caption: `Download From ${text}`,
                     footer: 'Press The Button Below',
                     buttons: buttons,
