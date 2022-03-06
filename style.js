@@ -1846,6 +1846,7 @@ break
             break
             case 'ttnowm': case 'tiktokmp3':
 	m.reply('tunggu anta')
+	let {TiktokDownloader} = require('./lib/tiktokdl')
 	kntl = `${q}`
 	mmk = await TiktokDownloader(kntl)
 	link_bkp = mmk.result.nowatermark
@@ -1866,6 +1867,7 @@ break
 	break
 	case 'ttwm': case 'tiktokwm':
 	m.reply('sabar woi')
+	let {TiktokDownloader} = require('./lib/tiktokdl')
 	kntl = `${q}`
 	mmk = await TiktokDownloader(kntl)
 	link_bkp = mmk.result.watermark
@@ -1875,7 +1877,7 @@ break
                     {buttonId: `ttmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
                 ]
                 let buttonMessage = {
-                    video: { url: mmk.result.nowatermark },
+                    video: { url: mmk.result.watermark },
                     caption: `Download From ${text}`,
                     footer: 'Press The Button Below',
                     buttons: buttons,
