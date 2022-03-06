@@ -1809,26 +1809,12 @@ break
                 style.sendText(m.chat, `⭔ *Hasil :* ${anu.message}`, m)
             }
             break
-            case 'ttnowm': case 'ttwm':
-    if (!text) throw 'Masukkan Query Link!'
+            case 'ttnowm':     
 	m.reply('tunggu anta')
 	kntl = `${q}`
 	asu = await TiktokDownloader(kntl)	    
         anu = asu.result.nowatermark
-        sendFileFromUrl(from,anu,'Done',m)
-	 let buttons = [
-                    {buttonId: `tiktokwm ${text}`, buttonText: {displayText: '► With Watermark'}, type: 1},
-                    {buttonId: `tiktokmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
-                ]
-                let buttonMessage = {
-                    video: { url: asu.result.nowatermark },                    
-                    caption: `Download From ${text}`,
-                    footer: 'Press The Button Below',
-                    buttons: buttons,
-                    headerType: 5
-                }
-                style.sendMessage(m.chat, buttonMessage, { quoted: m })
-  
+        sendFileFromUrl(from,anu,'Done',m)	 
 	break
 	        /*case 'tiktok': case 'tiktoknowm': {
                 if (!text) throw 'Masukkan Query Link!'
