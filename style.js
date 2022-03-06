@@ -11,14 +11,13 @@ const util = require('util')
 const chalk = require('chalk')
 const { exec, spawn, execSync } = require("child_process")
 const axios = require('axios')
-const path = require('path')
-const xfar = require('xfarr-api')
-const os = require('os')
+const {TiktokDownloader} = require('./lib/tiktokdl')
 const TicTacToe = require("./lib/tictactoe")
-const fetch = require('node-fetch')
+const xfar = require('xfarr-api')
+const path = require('path')
+const os = require('os')
 const moment = require('moment-timezone')
 const { JSDOM } = require('jsdom')
-const {TiktokDownloader} = require('./lib/tiktokdl')
 const speed = require('performance-now')
 const { performance } = require('perf_hooks')
 const { Primbon } = require('scrape-primbon')
@@ -52,11 +51,11 @@ module.exports = style = async (style, m, chatUpdate, store) => {
         var budy = (typeof m.text == 'string' ? m.text : '')
         var prefix = prefa ? /^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@#$%^&.©^]/gi.test(body) ? body.match(/^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@#$%^&.©^]/gi)[0] : "" : prefa ?? global.prefix
         const isCmd = body.startsWith(prefix)
+        const from = m.key.remoteJid
         const command = body.replace(prefix, '').trim().split(/ +/).shift().toLowerCase()
         const args = body.trim().split(/ +/).slice(1)
         const pushname = m.pushName || "No Name"
         const botNumber = await style.decodeJid(style.user.id)
-        const from = m.key.remoteJid
         const isCreator = [botNumber, ...global.owner].map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender)
         const itsMe = m.sender == botNumber ? true : false
         const text = q = args.join(" ")
@@ -64,29 +63,26 @@ module.exports = style = async (style, m, chatUpdate, store) => {
         const mime = (quoted.msg || quoted).mimetype || ''
 	    const isMedia = /image|video|sticker|audio/.test(mime)
 	
-	       //button
-	     const sendFileFromUrl = async (from, url, caption, m, men) => {
+	   //Buttonnya
+	   const sendFileFromUrl = async (from, url, caption, m, men) => {
             let mime = '';
             let res = await axios.head(url)
             mime = res.headers['content-type']
             if (mime.split("/")[1] === "gif") {
-                return style.sendMessage(from, { video: await getBuffer(url), caption: caption, gifPlayback: true, mentions: men ? men : []}, {quoted: m})
+                return cafnay.sendMessage(from, { video: await getBuffer(url), caption: caption, gifPlayback: true, mentions: men ? men : []}, {quoted: m})
                 }
             let type = mime.split("/")[0]+"Message"
             if(mime.split("/")[0] === "image"){
-                return style.sendMessage(from, { image: await getBuffer(url), caption: caption, mentions: men ? men : []}, {quoted: m})
+                return cafnay.sendMessage(from, { image: await getBuffer(url), caption: caption, mentions: men ? men : []}, {quoted: m})
             } else if(mime.split("/")[0] === "video"){
-                return style.sendMessage(from, { video: await getBuffer(url), caption: caption, mentions: men ? men : []}, {quoted: m})
+                return cafnay.sendMessage(from, { video: await getBuffer(url), caption: caption, mentions: men ? men : []}, {quoted: m})
             } else if(mime.split("/")[0] === "audio"){
-                return style.sendMessage(from, { audio: await getBuffer(url), caption: caption, mentions: men ? men : [], mimetype: 'audio/mpeg'}, {quoted: m })
+                return cafnay.sendMessage(from, { audio: await getBuffer(url), caption: caption, mentions: men ? men : [], mimetype: 'audio/mpeg'}, {quoted: m })
             } else {
-                return style.sendMessage(from, { document: await getBuffer(url), mimetype: mime, caption: caption, mentions: men ? men : []}, {quoted: m })
+                return cafnay.sendMessage(from, { document: await getBuffer(url), mimetype: mime, caption: caption, mentions: men ? men : []}, {quoted: m })
             }
         }
-        const reply = (teks) => {
-            style.sendMessage(from, teks, text, {quoted:m})
-        }
-		
+	
         // Group
         const groupMetadata = m.isGroup ? await style.groupMetadata(m.chat).catch(e => {}) : ''
         const groupName = m.isGroup ? groupMetadata.subject : ''
@@ -459,18 +455,11 @@ Silahkan @${m.mentionedJid[0].split`@`[0]} untuk ketik terima/tolak`
             }
             }
             break	    
+            
             case 'sc': {
-                m.reply('ngak ada sc abis')
-                 }
+                m.reply('Script : https://github.com/Agus-style')
+            }
             break
-case 'telesticker':
-let stiktele = await xfar.Telesticker(q)
-for (let i = 0; i < (stiktele.length < 100 ? stiktele.length : 100); i++) {
-console.log(stiktele[i].url)
-await sleep(500)
-style.sendMessage(m.chat, { sticker: { url: stiktele[i].url }, packname: global.packname, author: global.author }, { quoted: m })
-}
-break
             case 'chat': {
                 if (!isCreator) throw mess.owner
                 if (!q) throw 'Option : 1. mute\n2. unmute\n3. archive\n4. unarchive\n5. read\n6. unread\n7. delete'
@@ -719,7 +708,7 @@ break
                 if (!text) throw 'Text ?'
                 await style.groupUpdateDescription(m.chat, text).then((res) => m.reply(mess.success)).catch((err) => m.reply(jsonformat(err)))
             }
-            break            
+            break
           case 'setppbot': {
                 if (!isCreator) throw mess.owner
                 if (!quoted) throw `Kirim/Reply Image Dengan Caption ${prefix + command}`
@@ -1013,7 +1002,7 @@ break
                     let btn = [{
                                 urlButton: {
                                     displayText: 'Source Code',
-                                    url: 'https://www.google.com'
+                                    url: 'https://github.com/Agus-style'
                                 }
                             }, {
                                 callButton: {
@@ -1053,7 +1042,7 @@ break
 		    let btn = [{
                                 urlButton: {
                                     displayText: 'Source Code',
-                                    url: 'https://www.google.com'
+                                    url: 'https://github.com/Agus-style'
                                 }
                             }, {
                                 callButton: {
@@ -1174,7 +1163,15 @@ break
 		}
 	    }
 	    break
-            case 'memegen': case 'smeme2': {
+	    case 'telesticker':
+let stiktele = await xfar.Telesticker(q)
+for (let i = 0; i < (stiktele.length < 100 ? stiktele.length : 100); i++) {
+console.log(stiktele[i].url)
+await sleep(500)
+style.sendMessage(m.chat, { sticker: { url: stiktele[i].url }, packname: global.packname, author: global.author }, { quoted: m })
+}
+break
+	    case 'memegen': case 'smeme2': {
         if (!quoted) return m.reply(`Kirim/Reply Foto Dengan Caption ${prefix + command} *teks|teks*`)
         m.reply(mess.wait)
         let { UploadFileUgu, webp2mp4File, TelegraPh } = require('./lib/uploader')
@@ -1188,18 +1185,18 @@ break
         await fs.unlinkSync(mengmeme)
         }
        break
-     case 'smeme': case 'stickermeme': case 'stickmeme': {
-       if (!quoted) return m.reply(`Kirim/Reply Foto Dengan Caption ${prefix + command} *teks*`)
-       m.reply(mess.wait)
-       let { UploadFileUgu, webp2mp4File, TelegraPh } = require('./lib/uploader')
-       arg = args.join(' ')
-       mee = await style.downloadAndSaveMediaMessage(quoted)
-       mem = await TelegraPh(mee)
-       meme = `https://api.memegen.link/images/custom/-/${arg}.png?background=${mem}`
-       memek = await style.sendImageAsSticker(m.chat, meme, m, { packname: global.packname, author: global.author })
-       await fs.unlinkSync(memek)
-       }
-     break
+       case 'smeme': case 'stickermeme': case 'stickmeme': {
+if (!quoted) return m.reply(`Kirim/Reply Foto Dengan Caption ${prefix + command} *teks*`)
+m.reply(mess.wait)
+let { UploadFileUgu, webp2mp4File, TelegraPh } = require('./lib/uploader')
+arg = args.join(' ')
+mee = await style.downloadAndSaveMediaMessage(quoted)
+mem = await TelegraPh(mee)
+meme = `https://api.memegen.link/images/custom/-/${arg}.png?background=${mem}`
+memek = await style.sendImageAsSticker(m.chat, meme, m, { packname: global.packname, author: global.author })
+await fs.unlinkSync(memek)
+}
+break
             case 'toimage': case 'toimg': {
                 if (!quoted) throw 'Reply Image'
                 if (!/webp/.test(mime)) throw `balas stiker dengan caption *${prefix + command}*`
@@ -1811,27 +1808,84 @@ break
                 if (anu.status == false) return m.reply(anu.message)
                 style.sendText(m.chat, `⭔ *Hasil :* ${anu.message}`, m)
             }
-            break	                   
-            case 'ttnowm':
+            break
+            case 'ttnowm': 
 	m.reply('tunggu anta')
 	kntl = `${q}`
 	mmk = await TiktokDownloader(kntl)
-	link_bkp = mmk.result.nowatermark
-	sendFileFromUrl(from,link_bkp,'Done',m)
+        link_bkp = mmk.result.nowatermark
+        sendFileFromUrl(from,link_bkp,'Done',m)
+	 let buttons = [
+                    {buttonId: `tiktokwm ${text}`, buttonText: {displayText: '► With Watermark'}, type: 1},
+                    {buttonId: `tiktokmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
+                ]
+                let buttonMessage = {
+                    video: { url: mmk.result.nowatermark },
+                    caption: `Download From ${text}`,
+                    footer: 'Press The Button Below',
+                    buttons: buttons,
+                    headerType: 5
+                }
+                style.sendMessage(m.chat, buttonMessage, { quoted: m })
+  
 	break
-	case 'ttwm':
-	m.reply('sabar woi')
-	kntl = `${q}`
-	mmk = await TiktokDownloader(kntl)
-	link_bkp = mmk.result.watermark
-	sendFileFromUrl(from,link_bkp,'Done',m)
-	break
-	case 'ttmp3':
-		   m.reply(mess.wait)
-		   audio = await fetchJson(`http://hadi-api.herokuapp.com/api/tiktok?url=${q}`)
-		   audio = audio.result.audio_only.original
-		   cafnay.sendMessage(m.chat, {document: {url: audio}, mimetype: 'audio/mpeg', fileName: `audio_tiktok.mp3`}, {quoted:m})
-		   break
+	        case 'tiktok': case 'tiktoknowm': {
+                if (!text) throw 'Masukkan Query Link!'
+                m.reply(mess.wait)
+                let anu = await fetchJson(api('zenz', '/downloader/tiktok', { url: text }, 'apikey'))
+                let buttons = [
+                    {buttonId: `tiktokwm ${text}`, buttonText: {displayText: '► With Watermark'}, type: 1},
+                    {buttonId: `tiktokmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
+                ]
+                let buttonMessage = {
+                    video: { url: anu.result.nowatermark },
+                    caption: `Download From ${text}`,
+                    footer: 'Press The Button Below',
+                    buttons: buttons,
+                    headerType: 5
+                }
+                style.sendMessage(m.chat, buttonMessage, { quoted: m })
+            }
+            break
+            case 'tiktokwm': case 'tiktokwatermark': {
+                if (!text) throw 'Masukkan Query Link!'
+                m.reply(mess.wait)
+                let anu = await fetchJson(api('zenz', '/downloader/tiktok', { url: text }, 'apikey'))
+                let buttons = [
+                    {buttonId: `tiktoknowm ${text}`, buttonText: {displayText: '► No Watermark'}, type: 1},
+                    {buttonId: `tiktokmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
+                ]
+                let buttonMessage = {
+                    video: { url: anu.result.watermark },
+                    caption: `Download From ${text}`,
+                    footer: 'Press The Button Below',
+                    buttons: buttons,
+                    headerType: 5
+                }
+                style.sendMessage(m.chat, buttonMessage, { quoted: m })
+            }
+            break
+            case 'tiktokmp3': case 'tiktokaudio': {
+                if (!text) throw 'Masukkan Query Link!'
+                m.reply(mess.wait)
+                let anu = await fetchJson(api('zenz', '/downloader/tiktok', { url: text }, 'apikey'))
+                let buttons = [
+                    {buttonId: `tiktoknowm ${text}`, buttonText: {displayText: '► No Watermark'}, type: 1},
+                    {buttonId: `tiktokwm ${text}`, buttonText: {displayText: '► With Watermark'}, type: 1}
+                ]
+                let buttonMessage = {
+                    text: `Download From ${text}`,
+                    footer: 'Press The Button Below',
+                    buttons: buttons,
+                    headerType: 2
+                }
+                let msg = await style.sendMessage(m.chat, buttonMessage, { quoted: m })
+		let { toAudio } = require('./lib/converter')
+		let nganu = await getBuffer(anu.result.nowatermark)
+		let cnvrt = await toAudio(nganu, 'mp4')
+                style.sendMessage(m.chat, { audio: cnvrt, mimetype: 'audio/mpeg'}, { quoted: msg })
+            }
+            break
 	        case 'instagram': case 'ig': case 'igdl': {
                 if (!text) throw 'No Query Url!'
                 m.reply(mess.wait)
@@ -2365,7 +2419,6 @@ ${cpus.map((cpu, i) => `${i + 1}. ${cpu.model.trim()} (${cpu.speed} MHZ)\n${Obje
 │⭔ ${prefix}umma [url]
 │⭔ ${prefix}joox [query]
 │⭔ ${prefix}soundcloud [url]
-│⭔ ${prefix}telesticker [url]
 │
 └───────⭓
 
@@ -2537,8 +2590,6 @@ ${cpus.map((cpu, i) => `${i + 1}. ${cpu.model.trim()} (${cpu.speed} MHZ)\n${Obje
 │⭔ ${prefix}ebinary
 │⭔ ${prefix}dbinary
 │⭔ ${prefix}styletext
-│⭔ ${prefix}smeme
-│⭔ ${prefix}smeme2
 │
 └───────⭓
 
@@ -2626,7 +2677,7 @@ ${cpus.map((cpu, i) => `${i + 1}. ${cpu.model.trim()} (${cpu.speed} MHZ)\n${Obje
                             hydratedButtons: [{
                                 urlButton: {
                                     displayText: 'Source Code',
-                                    url: 'https://www.goole.com'
+                                    url: 'https://github.com/Agus-style'
                                 }
                             }, {
                                 callButton: {
