@@ -1817,6 +1817,7 @@ break
 	m.reply('tunggu anta')
 	kntl = `${q}`
 	mmk = await TiktokDownloader(kntl)
+        link_bkp = mmk.result.nowatermark
 	 let buttons = [
                     {buttonId: `ttwm ${text}`, buttonText: {displayText: '► With Watermark'}, type: 1},
                     {buttonId: `ttmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
@@ -1835,6 +1836,7 @@ break
 	m.reply('sabar woi')
 	kntl = `${q}`
 	mmk = await TiktokDownloader(kntl)	
+        link_bkp = mmk.result.watermark
 	let buttons = [
                     {buttonId: `ttnowm ${text}`, buttonText: {displayText: '► No Watermark'}, type: 1},
                     {buttonId: `ttmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
@@ -1853,6 +1855,7 @@ break
 	m.reply('sabar woi')
 	kntl = `${q}`
 	mmk = await TiktokDownloader(kntl)
+        link_bkp = mmk.result.audio
 	let buttons = [
                     {buttonId: `ttwm ${text}`, buttonText: {displayText: '► With Watermark'}, type: 1},
                     {buttonId: `ttnowm ${text}`, buttonText: {displayText: '► No Watermark'}, type: 1}
