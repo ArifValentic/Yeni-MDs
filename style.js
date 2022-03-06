@@ -1813,72 +1813,13 @@ break
                 style.sendText(m.chat, `⭔ *Hasil :* ${anu.message}`, m)
             }
             break
-	        case 'tiktok': case 'tiktoknowm': {
-                if (!text) throw 'Masukkan Query Link!'
-                m.reply(mess.wait)
-                let anu = await fetchJson(api('zenz', '/downloader/tiktok', { url: text }, 'apikey'))
-                let buttons = [
-                    {buttonId: `tiktokwm ${text}`, buttonText: {displayText: '► With Watermark'}, type: 1},
-                    {buttonId: `tiktokmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
-                ]
-                let buttonMessage = {
-                    video: { url: anu.result.nowatermark },
-                    caption: `Download From ${text}`,
-                    footer: 'Press The Button Below',
-                    buttons: buttons,
-                    headerType: 5
-                }
-                style.sendMessage(m.chat, buttonMessage, { quoted: m })
-            }
-            break
-            case 'tiktokwm': case 'tiktokwatermark': {
-                if (!text) throw 'Masukkan Query Link!'
-                m.reply(mess.wait)
-                let anu = await fetchJson(api('zenz', '/downloader/tiktok', { url: text }, 'apikey'))
-                let buttons = [
-                    {buttonId: `tiktoknowm ${text}`, buttonText: {displayText: '► No Watermark'}, type: 1},
-                    {buttonId: `tiktokmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
-                ]
-                let buttonMessage = {
-                    video: { url: anu.result.watermark },
-                    caption: `Download From ${text}`,
-                    footer: 'Press The Button Below',
-                    buttons: buttons,
-                    headerType: 5
-                }
-                style.sendMessage(m.chat, buttonMessage, { quoted: m })
-            }
-            break
-            case 'tiktokmp3': case 'tiktokaudio': {
-                if (!text) throw 'Masukkan Query Link!'
-                m.reply(mess.wait)
-                let anu = await fetchJson(api('zenz', '/downloader/tiktok', { url: text }, 'apikey'))
-                let buttons = [
-                    {buttonId: `tiktoknowm ${text}`, buttonText: {displayText: '► No Watermark'}, type: 1},
-                    {buttonId: `tiktokwm ${text}`, buttonText: {displayText: '► With Watermark'}, type: 1}
-                ]
-                let buttonMessage = {
-                    text: `Download From ${text}`,
-                    footer: 'Press The Button Below',
-                    buttons: buttons,
-                    headerType: 2
-                }
-                let msg = await style.sendMessage(m.chat, buttonMessage, { quoted: m })
-		let { toAudio } = require('./lib/converter')
-		let nganu = await getBuffer(anu.result.nowatermark)
-		let cnvrt = await toAudio(nganu, 'mp4')
-                style.sendMessage(m.chat, { audio: cnvrt, mimetype: 'audio/mpeg'}, { quoted: msg })
-            }
-            break
-case 'ttnowm':
+      case 'ttnowm': case 'tiktoknowm':
 	m.reply('tunggu anta')
 	kntl = `${q}`
 	mmk = await TiktokDownloader(kntl)
-	link_bkp = mmk.result.nowatermark
-	sendFileFromUrl(from,link_bkp,'Done',m)
 	 let buttons = [
-                    {buttonId: `tiktokwm ${text}`, buttonText: {displayText: '► With Watermark'}, type: 1},
-                    {buttonId: `tiktokmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
+                    {buttonId: `ttwm ${text}`, buttonText: {displayText: '► With Watermark'}, type: 1},
+                    {buttonId: `ttmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
                 ]
                 let buttonMessage = {
                     video: { url: mmk.result.nowatermark },
@@ -1889,6 +1830,43 @@ case 'ttnowm':
                 }
                 style.sendMessage(m.chat, buttonMessage, { quoted: m })
   
+	break
+	case 'ttwm': case 'tiktokwm':
+	m.reply('sabar woi')
+	kntl = `${q}`
+	mmk = await TiktokDownloader(kntl)	
+	let buttons = [
+                    {buttonId: `ttnowm ${text}`, buttonText: {displayText: '► No Watermark'}, type: 1},
+                    {buttonId: `ttmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
+                ]
+	let buttonMessage = {
+                    video: { url: mmk.result.watermark },
+                    caption: `Download From ${text}`,
+                    footer: 'Press The Button Below',
+                    buttons: buttons,
+                    headerType: 5
+                }
+                style.sendMessage(m.chat, buttonMessage, { quoted: m })
+            break
+           
+	case 'ttmp3': case 'tiktokmp3':
+	m.reply('sabar woi')
+	kntl = `${q}`
+	mmk = await TiktokDownloader(kntl)
+	let buttons = [
+                    {buttonId: `ttwm ${text}`, buttonText: {displayText: '► With Watermark'}, type: 1},
+                    {buttonId: `ttnowm ${text}`, buttonText: {displayText: '► No Watermark'}, type: 1}
+                ]
+	let buttonMessage = {
+                    video: { url: mmk.result.audio },
+                    caption: `Download From ${text}`,
+                    footer: 'Press The Button Below',
+                    buttons: buttons,
+                    headerType: 5
+                }
+                style.sendMessage(m.chat, buttonMessage, { quoted: m })
+            break
+
 	        case 'instagram': case 'ig': case 'igdl': {
                 if (!text) throw 'No Query Url!'
                 m.reply(mess.wait)
