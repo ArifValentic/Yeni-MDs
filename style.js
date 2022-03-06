@@ -1818,6 +1818,7 @@ break
 	kntl = `${q}`
 	mmk = await TiktokDownloader(kntl)
         link_bkp = mmk.result.nowatermark
+        sendFileFromUrl(from,link_bkp,'Done',m)
 	 let buttons = [
                     {buttonId: `ttwm ${text}`, buttonText: {displayText: '► With Watermark'}, type: 1},
                     {buttonId: `ttmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
@@ -1837,6 +1838,7 @@ break
 	kntl = `${q}`
 	mmk = await TiktokDownloader(kntl)	
         link_bkp = mmk.result.watermark
+        sendFileFromUrl(from,link_bkp,'Done',m)
 	let buttons = [
                     {buttonId: `ttnowm ${text}`, buttonText: {displayText: '► No Watermark'}, type: 1},
                     {buttonId: `ttmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
@@ -1856,6 +1858,7 @@ break
 	kntl = `${q}`
 	mmk = await TiktokDownloader(kntl)
         link_bkp = mmk.result.audio
+        sendFileFromUrl(from,link_bkp,'Done',m)
 	let buttons = [
                     {buttonId: `ttwm ${text}`, buttonText: {displayText: '► With Watermark'}, type: 1},
                     {buttonId: `ttnowm ${text}`, buttonText: {displayText: '► No Watermark'}, type: 1}
