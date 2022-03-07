@@ -1882,7 +1882,7 @@ let buttons1 = [
                 style.sendMessage(m.chat, buttonMessage1, { quoted: m })
             
             break
-                 case 'ttmp3':
+                 case 'tiktokmp3':
 		   m.reply(mess.wait)
 		   audio = await fetchJson(`http://hadi-api.herokuapp.com/api/tiktok?url=${q}`)
 		   audio = audio.result.audio_only.original
