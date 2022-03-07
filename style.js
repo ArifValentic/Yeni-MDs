@@ -71,6 +71,56 @@ module.exports = style = async (style, m, chatUpdate, store) => {
     	const isBotAdmins = m.isGroup ? groupAdmins.includes(botNumber) : false
     	const isAdmins = m.isGroup ? groupAdmins.includes(m.sender) : false
 
+	         // Database
+        try {
+	    let users = global.db.data.users[m.sender]
+	    if (typeof users !== 'object') global.db.data.users[m.sender] = {}
+	    if (users) {
+		if (!isNumber(users.afkTime)) users.afkTime = -1
+		if (!('banned' in users)) users.banned = false
+		if (!('afkReason' in users)) users.afkReason = ''
+	    } else global.db.data.users[m.sender] = {
+		afkTime: -1,
+	    banned: false,
+		afkReason: '',
+	    }
+	     
+	    let chats = global.db.data.chats[m.chat]
+	    if (typeof chats !== 'object') global.db.data.chats[m.chat] = {}
+	    if (chats) {
+		if (!('antionce' in chats)) chats.antionce = true
+        if (!('mute' in chats)) chats.mute = false
+        if (!('antispam' in chats)) chats.antispam = true
+		if (!('antidelete' in chats)) chats.antidelete = false
+        if (!('setDemote' in chat)) chat.setDemote = ''
+	    if (!('setPromote' in chat)) chat.setPromote = ''
+	    if (!('setWelcome' in chat)) chat.setWelcome = ''
+	    if (!('setLeave' in chat)) chat.setLeave = ''
+	    } else global.db.data.chats[m.chat] = {
+		antionce: true,
+		mute: false,
+		antispam: true,
+		antidelete: false,
+		setDemote: '',
+        setPromote: '',
+        setWelcome: '',
+        setLeave: '',
+	    }
+	    
+            let settings = global.db.data.settings[botNumber]
+            if (typeof settings !== 'object') global.db.data.settings[botNumber] = {}
+            if (settings) {
+            if (!('available' in settings)) settings.available = false
+            if (!('composing' in settings)) settings.composing = false
+            if (!('recording' in settings)) settings.recording = false
+            } else global.db.data.settings[botNumber] = {
+                available: false,
+                composing: false,
+                recording: false,
+            }
+        } catch (err) {
+            console.log(err)
+        }
 	
         // Public & Self
         if (!style.public) {
