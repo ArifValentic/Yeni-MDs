@@ -1852,29 +1852,12 @@ let buttons1 = [
                 style.sendMessage(m.chat, buttonMessage1, { quoted: m })
             
             break
-
-
-            case 'tiktokmp3': case 'tiktokaudio': {
-                if (!text) throw 'Masukkan Query Link!'
-                m.reply(mess.wait)
-                let anu = await fetchJson(`http://hadi-api.herokuapp.com/api/tiktok?url=${q}`)
-                let buttons2 = [
-                    {buttonId: `tiktoknowm ${text}`, buttonText: {displayText: '► No Watermark'}, type: 1},
-                    {buttonId: `tiktokwm ${text}`, buttonText: {displayText: '► With Watermark'}, type: 1}
-                ]
-                let buttonMessage2 = {
-                    text: `Download From ${text}`,
-                    footerText: 'Press The Button Below',
-                    buttons: buttons2,
-                    headerType: 2
-                }
-                let msg = await style.sendMessage(m.chat, buttonMessage2, { quoted: m })
-                let { toAudio } = require('./lib/converter')
-		let nganu = await getBuffer(anu.result.nowatermark)
-		let cnvrt = await toAudio(nganu, 'mp4')   
-                style.sendMessage(m.chat, { audio: cnvrt, mimetype: 'audio/mpeg'}, { quoted: msg })                  
-                  }
-            break	           	          	
+                 case 'ttmp3':
+		   m.reply(mess.wait)
+		   audio = await fetchJson(`http://hadi-api.herokuapp.com/api/tiktok?url=${q}`)
+		   audio = audio.result.audio_only.original
+		   cafnay.sendMessage(m.chat, {document: {url: audio}, mimetype: 'audio/mpeg', fileName: `audio_tiktok.mp3`}, {quoted:m})		   
+		   break	           	          	
 	        /*case 'tiktok': case 'tiktoknowm': {
                 if (!text) throw 'Masukkan Query Link!'
                 m.reply(mess.wait)
