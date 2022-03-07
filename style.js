@@ -1882,11 +1882,11 @@ let buttons = [
                     {buttonId: `tiktokwm ${urlny} ${type}`, buttonText: {displayText: '► With Watermark'}, type: 1},
                     {buttonId: `tiktokmp3 ${urlny} ${type}`, buttonText: {displayText: '♫ Audio'}, type: 1}
                 ]
-                let buttonMessage = {l
+                let buttonMessage = {
                     text: `pilih salah satu`,
                     footer: 'DOWNLOAD',
                     buttons: buttons,
-                    headerType: 1
+                    headerType: 1                    
                 }
                 style.sendMessage(m.chat, buttonMessage, { quoted: m })  
 }
