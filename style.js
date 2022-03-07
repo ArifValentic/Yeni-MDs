@@ -51,7 +51,7 @@ module.exports = style = async (style, m, chatUpdate, store) => {
         var budy = (typeof m.text == 'string' ? m.text : '')
         var prefix = prefa ? /^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@#$%^&.©^]/gi.test(body) ? body.match(/^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@#$%^&.©^]/gi)[0] : "" : prefa ?? global.prefix
         const isCmd = body.startsWith(prefix)
-        const from = m.key.remoteJid
+        
         const command = body.replace(prefix, '').trim().split(/ +/).shift().toLowerCase()
         const args = body.trim().split(/ +/).slice(1)
         const pushname = m.pushName || "No Name"
@@ -1809,13 +1809,26 @@ break
                 style.sendText(m.chat, `⭔ *Hasil :* ${anu.message}`, m)
             }
             break
-            case 'ttnowm':     
+            case 'ttnowm':
 	m.reply('tunggu anta')
 	kntl = `${q}`
-	asu = await TiktokDownloader(kntl)	    
-        anu = asu.result.nowatermark
-        sendFileFromUrl(from,anu,'Done',m)	 
+	mmk = await TiktokDownloader(kntl)
+	link_bkp = mmk.result.nowatermark
+	sendFileFromUrl(from,link_bkp,'Done',m)
 	break
+	case 'ttwm':
+	m.reply('sabar woi')
+	kntl = `${q}`
+	mmk = await TiktokDownloader(kntl)
+	link_bkp = mmk.result.watermark
+	sendFileFromUrl(from,link_bkp,'Done',m)
+	break
+	case 'ttmp3':
+		   m.reply(mess.wait)
+		   audio = await fetchJson(`http://hadi-api.herokuapp.com/api/tiktok?url=${q}`)
+		   audio = audio.result.audio_only.original
+		   cafnay.sendMessage(m.chat, {document: {url: audio}, mimetype: 'audio/mpeg', fileName: `audio_tiktok.mp3`}, {quoted:m})
+		   break
 	        /*case 'tiktok': case 'tiktoknowm': {
                 if (!text) throw 'Masukkan Query Link!'
                 m.reply(mess.wait)
