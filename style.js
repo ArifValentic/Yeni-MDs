@@ -1871,7 +1871,58 @@ break
                 style.sendText(m.chat, `⭔ *Hasil :* ${anu.message}`, m)
             }
             break
-            case'ttdl':
+            case 'tiktoknowm':
+if (!text) throw 'Masukkan Query Link!'
+var { TiktokDownloader } = require('./lib/tiktokdl')
+m.reply(mess.wait)
+res = await TiktokDownloader(`${q}`).catch(e => {
+})
+console.log(res) 
+let buttons = [
+                    {buttonId: `tiktokwm ${text}`, buttonText: {displayText: '► With Watermark'}, type: 1},
+                    {buttonId: `tiktokmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
+                ]
+                let buttonMessage = {
+                    video: { url: res.result.nowatermark },
+                    caption: `Press The Button Select Download`,
+                    footerText: 'Press The Button Below',
+                    buttons: buttons,
+                    headerType: 5
+                }
+                hisoka.sendMessage(m.chat, buttonMessage, { quoted: m })
+            
+            break
+
+case 'tiktokwm':
+if (!text) return m.reply('Linknya?')
+var { TiktokDownloader } = require('./lib/tiktokdl')
+m.reply(mess.wait)
+res = await TiktokDownloader(`${q}`).catch(e => {
+//reply(mess.error.api)
+})
+console.log(res)
+let buttons1 = [
+                    {buttonId: `tiktoknowm ${text}`, buttonText: {displayText: '► No With Watermark'}, type: 1},
+                    {buttonId: `tiktokmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
+                ]
+                let buttonMessage1 = {
+                    video: { url: res.result.watermark },
+                    caption: `Press The Button Select Download`,
+                    footerText: 'Press The Button Below',
+                    buttons: buttons1,
+                    headerType: 5
+                }
+                hisoka.sendMessage(m.chat, buttonMessage1, { quoted: m })
+            
+            break
+	
+	case 'tiktokmp3':
+		   m.reply(mess.wait)
+		   audio = await fetchJson(`http://hadi-api.herokuapp.com/api/tiktok?url=${q}`)
+		   audio = audio.result.audio_only.original
+		   style.sendMessage(m.chat, {document: {url: audio}, mimetype: 'audio/mpeg', fileName: `audio_tiktok.mp3`}, {quoted:m})		   
+		   break
+            /*case'ttdl':
             case 'tiktok':
 urlny = args[0]
 if(!urlny) throw "url nya mana"
@@ -1904,7 +1955,7 @@ case '--wm':
 style.sendMessage(m.chat, {video: {url: res.result.watermark}, caption: "Done"}, {quoted: m})
 break
 }
-break                     	          		        
+break*/                     	          		        
 	        case 'instagram': case 'ig': case 'igdl': {
                 if (!text) throw 'No Query Url!'
                 m.reply(mess.wait)
