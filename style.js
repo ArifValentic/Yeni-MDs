@@ -1880,9 +1880,9 @@ var { TiktokDownloader } = require('./lib/tiktokdl')
 res = await TiktokDownloader(`${urlny}`)
 if (!type) {
 let buttons = [
-                    {buttonId: `tiktoknowm ${urlny} ${type}`, buttonText: {displayText: '► Watermark'}, type: 1},
-                    {buttonId: `tiktokwm ${urlny} ${type}`, buttonText: {displayText: '► With Watermark'}, type: 1},
-                    {buttonId: `tiktokmp3 ${urlny} ${type}`, buttonText: {displayText: '♫ Audio'}, type: 1}
+                    {buttonId: `tiktoknowm ${urlny} --nowm`, buttonText: {displayText: '► Watermark'}, type: 1},
+                    {buttonId: `tiktokwm ${urlny} --wm`, buttonText: {displayText: '► With Watermark'}, type: 1},
+                    {buttonId: `tiktokmp3 ${urlny} --mp3`, buttonText: {displayText: '♫ Audio'}, type: 1}
                 ]
                 let buttonMessage = {
                     text: `pilih salah satu`,
@@ -1899,7 +1899,6 @@ style.sendMessage(m.chat, {document: {url: audio.result.audio_only.original}, mi
 break
 case '--nowm':
 style.sendMessage(m.chat, {video: {url: res.result.now/atermark}, caption: "Done"}, {quoted: m})
-
 break
 case '--wm':
 style.sendMessage(m.chat, {video: {url: res.result.watermark}, caption: "Done"}, {quoted: m})
