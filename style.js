@@ -391,7 +391,39 @@ klik https://wa.me/${botNumber.split`@`[0]}`, m, { mentions: [roof.p, roof.p2] }
 	    delete this.suit[roof.id]
 	    }
 	    }
+	    
+	    let mentionUser = [...new Set([...(m.mentionedJid || []), ...(m.quoted ? [m.quoted.sender] : [])])]
+	    for (let jid of mentionUser) {
+            let user = global.db.users[jid]
+            if (!user) continue
+            let afkTime = user.afkTime
+            if (!afkTime || afkTime < 0) continue
+            let reason = user.afkReason || ''
+            m.reply(`
+Jangan tag dia!
+Dia sedang AFK ${reason ? 'dengan alasan ' + reason : 'tanpa alasan'}
+Selama ${clockString(new Date - afkTime)}
+`.trim())
+        }
+
+        if (db.users[m.sender].afkTime > -1) {
+            let user = global.db.users[m.sender]
+            m.reply(`
+Kamu berhenti AFK${user.afkReason ? ' setelah ' + user.afkReason : ''}
+Selama ${clockString(new Date - user.afkTime)}
+`.trim())
+            user.afkTime = -1
+            user.afkReason = ''
+        }
+	    
         switch(command) {
+	    case 'afk': {
+                let user = global.db.users[m.sender]
+                user.afkTime = + new Date
+                user.afkReason = text
+                m.reply(`${m.pushName} Telah Afk${text ? ': ' + text : ''}`)
+            }
+            break		            
         case 'ttc': case 'ttt': case 'tictactoe': {
             let TicTacToe = require("./lib/tictactoe")
             this.game = this.game ? this.game : {}
@@ -1838,57 +1870,40 @@ break
                 style.sendText(m.chat, `⭔ *Hasil :* ${anu.message}`, m)
             }
             break
-            case 'tiktoknowm':
-if (!text) throw 'Masukkan Query Link!'
+            case'ttdl':
+            case 'tiktok':
+urlny = args[0]
+type = args[1]
 var { TiktokDownloader } = require('./lib/tiktokdl')
-m.reply(mess.wait)
-res = await TiktokDownloader(`${q}`).catch(e => {
-})
-console.log(res) 
+if(!urlny) throw "url nya mana"
+if (!type) {
 let buttons = [
-                    {buttonId: `tiktokwm ${text}`, buttonText: {displayText: '► With Watermark'}, type: 1},
-                    {buttonId: `tiktokmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
+                    {buttonId: `tiktoknowm ${urlny} ${type}`, buttonText: {displayText: '► Watermark'}, type: 1},
+                    {buttonId: `tiktokwm ${urlny} ${type}`, buttonText: {displayText: '► With Watermark'}, type: 1},
+                    {buttonId: `tiktokmp3 ${urlny} ${type}`, buttonText: {displayText: '♫ Audio'}, type: 1}
                 ]
-                let buttonMessage = {
-                    video: { url: res.result.nowatermark },
-                    caption: `Press The Button Select Download`,
-                    footerText: 'Press The Button Below',
+                let buttonMessage = {l
+                    text: `pilih salah satu`,
+                    footer: 'DOWNLOAD',
                     buttons: buttons,
-                    headerType: 5
+                    headerType: 1
                 }
-                style.sendMessage(m.chat, buttonMessage, { quoted: m })
-            
-            break
+                style.sendMessage(m.chat, buttonMessage, { quoted: m })  
+}
+switch(type) {
+case '--mp3':
+ audio = await fetchJson(`http://hadi-//api/tiktok?url=${urlny}`)
+style.sendMessage(m.chat, {document: {url: audio.result.audio_only.original}, mimetype: 'audio/mpeg', fileName: `audio_tiktok.mp3`}, {quoted:m})		   
+break
+case '--nowm':
+style.sendMessage(m.chat, {video: {url: res.result.now/atermark}, caption: "Done"}, {quoted: m})
 
-case 'tiktokwm':
-if (!text) return m.reply('Linknya?')
-var { TiktokDownloader } = require('./lib/tiktokdl')
-m.reply(mess.wait)
-res = await TiktokDownloader(`${q}`).catch(e => {
-//reply(mess.error.api)
-})
-console.log(res)
-let buttons1 = [
-                    {buttonId: `tiktoknowm ${text}`, buttonText: {displayText: '► No With Watermark'}, type: 1},
-                    {buttonId: `tiktokmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
-                ]
-                let buttonMessage1 = {
-                    video: { url: res.result.watermark },
-                    caption: `Press The Button Select Download`,
-                    footerText: 'Press The Button Below',
-                    buttons: buttons1,
-                    headerType: 5
-                }
-                style.sendMessage(m.chat, buttonMessage1, { quoted: m })
-            
-            break
-                 case 'tiktokmp3':
-		   m.reply(mess.wait)
-		   audio = await fetchJson(`http://hadi-api.herokuapp.com/api/tiktok?url=${q}`)
-		   audio = audio.result.audio_only.original
-		   style.sendMessage(m.chat, {document: {url: audio}, mimetype: 'audio/mpeg', fileName: `audio_tiktok.mp3`}, {quoted:m})		   
-		   break	           	          	
-	        
+break
+case '--wm':
+style.sendMessage(m.chat, {video: {url: res.result.watermark}, caption: "Done"}, {quoted: m})
+break
+}
+break                     	          		        
 	        case 'instagram': case 'ig': case 'igdl': {
                 if (!text) throw 'No Query Url!'
                 m.reply(mess.wait)
@@ -2407,9 +2422,7 @@ ${cpus.map((cpu, i) => `${i + 1}. ${cpu.model.trim()} (${cpu.speed} MHZ)\n${Obje
 
 ┌──⭓ *Downloader Menu*
 │
-│⭔ ${prefix}tiktoknowm [url]
-│⭔ ${prefix}tiktokwm [url]
-│⭔ ${prefix}tiktokmp3 [url]
+│⭔ ${prefix}tiktok [url]
 │⭔ ${prefix}instagram [url]
 │⭔ ${prefix}twitter [url]
 │⭔ ${prefix}twittermp3 [url]
@@ -2422,6 +2435,7 @@ ${cpus.map((cpu, i) => `${i + 1}. ${cpu.model.trim()} (${cpu.speed} MHZ)\n${Obje
 │⭔ ${prefix}umma [url]
 │⭔ ${prefix}joox [query]
 │⭔ ${prefix}soundcloud [url]
+│⭔ ${prefix}telesticker [url]
 │
 └───────⭓
 
@@ -2436,6 +2450,7 @@ ${cpus.map((cpu, i) => `${i + 1}. ${cpu.model.trim()} (${cpu.speed} MHZ)\n${Obje
 │⭔ ${prefix}wikimedia [query]
 │⭔ ${prefix}ytsearch [query]
 │⭔ ${prefix}ringtone [query]
+│⭔ ${prefix}soundcloud [url]
 │
 └───────⭓
 
@@ -2593,6 +2608,8 @@ ${cpus.map((cpu, i) => `${i + 1}. ${cpu.model.trim()} (${cpu.speed} MHZ)\n${Obje
 │⭔ ${prefix}ebinary
 │⭔ ${prefix}dbinary
 │⭔ ${prefix}styletext
+│⭔ ${prefix}smeme
+│⭔ ${prefix}smeme2
 │
 └───────⭓
 
