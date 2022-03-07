@@ -1889,7 +1889,7 @@ let buttons = [
                     buttons: buttons,
                     headerType: 5
                 }
-                hisoka.sendMessage(m.chat, buttonMessage, { quoted: m })
+                style.sendMessage(m.chat, buttonMessage, { quoted: m })
             
             break
 
@@ -1912,7 +1912,7 @@ let buttons1 = [
                     buttons: buttons1,
                     headerType: 5
                 }
-                hisoka.sendMessage(m.chat, buttonMessage1, { quoted: m })
+                style.sendMessage(m.chat, buttonMessage1, { quoted: m })
             
             break
 	
@@ -2475,6 +2475,9 @@ ${cpus.map((cpu, i) => `${i + 1}. ${cpu.model.trim()} (${cpu.speed} MHZ)\n${Obje
 ┌──⭓ *Downloader Menu*
 │
 │⭔ ${prefix}tiktok [url]
+│⭔ ${prefix}tiktokmp3 [url]
+│⭔ ${prefix}tiktokwm [url]
+│⭔ ${prefix}tiktoknowm [url]
 │⭔ ${prefix}instagram [url]
 │⭔ ${prefix}twitter [url]
 │⭔ ${prefix}twittermp3 [url]
