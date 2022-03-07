@@ -32,7 +32,7 @@ global.db.data = {
     users: {},
     chats: {},
     database: {},
-    game: {},
+    games: {},
     settings: {},
     ...(global.db.data || {})
 }
