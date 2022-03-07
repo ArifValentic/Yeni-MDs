@@ -1869,7 +1869,7 @@ let buttons1 = [
                     headerType: 2
                 }
                 let msg = await style.sendMessage(m.chat, buttonMessage2, { quoted: m })
-                style.sendMessage(m.chat, { audio: { url: audio.result.audio_only.original } }, { quoted: msg })
+                style.sendMessage(m.chat, { document { url: audio.result.audio_only.original } }, { quoted: msg })
             }
             break	           	          	
 	        /*case 'tiktok': case 'tiktoknowm': {
