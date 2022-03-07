@@ -32,8 +32,9 @@ global.db.data = {
     users: {},
     chats: {},
     database: {},
-    games: {},
+    game: {},
     settings: {},
+    others: {},
     ...(global.db.data || {})
 }
 const store = makeInMemoryStore({ logger: pino().child({ level: 'silent', stream: 'store' }) })
