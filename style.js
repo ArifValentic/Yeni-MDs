@@ -1886,7 +1886,7 @@ let buttons1 = [
 		   m.reply(mess.wait)
 		   audio = await fetchJson(`http://hadi-api.herokuapp.com/api/tiktok?url=${q}`)
 		   audio = audio.result.audio_only.original
-		   cafnay.sendMessage(m.chat, {document: {url: audio}, mimetype: 'audio/mpeg', fileName: `audio_tiktok.mp3`}, {quoted:m})		   
+		   style.sendMessage(m.chat, {document: {url: audio}, mimetype: 'audio/mpeg', fileName: `audio_tiktok.mp3`}, {quoted:m})		   
 		   break	           	          	
 	        
 	        case 'instagram': case 'ig': case 'igdl': {
