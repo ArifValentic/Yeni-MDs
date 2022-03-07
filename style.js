@@ -1814,7 +1814,7 @@ break
 	kntl = `${q}`
 	mmk = await TiktokDownloader(kntl)
 	link_bkp = mmk.result.nowatermark
-	sendFileFromUrl(from,link_bkp,'Done',m)
+	style.sendMessage(m.chat,link_bkp,'Done',m)
 	 let buttons = [
                     {buttonId: `tiktokwm ${text}`, buttonText: {displayText: '► With Watermark'}, type: 1},
                     {buttonId: `tiktokmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
@@ -1834,7 +1834,7 @@ break
 	kntl = `${q}`
 	mmk = await TiktokDownloader(kntl)
 	link_bkp = mmk.result.watermark
-	sendFileFromUrl(from,link_bkp,'Done',m)
+	style.sendMessage(m.chat,link_bkp,'Done',m)
 	let buttons = [
                     {buttonId: `tiktoknowm ${text}`, buttonText: {displayText: '► No Watermark'}, type: 1},
                     {buttonId: `tiktokmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
@@ -1867,7 +1867,7 @@ break
                 style.sendMessage(m.chat, buttonMessage, { quoted: m })
             }
             break*/
-            case 'tiktokwm': case 'tiktokwatermark': {
+            /*case 'tiktokwm': case 'tiktokwatermark': {
                 if (!text) throw 'Masukkan Query Link!'
                 m.reply(mess.wait)
                 let anu = await fetchJson(api('zenz', '/downloader/tiktok', { url: text }, 'apikey'))
@@ -1905,7 +1905,7 @@ break
 		let cnvrt = await toAudio(nganu, 'mp4')
                 style.sendMessage(m.chat, { audio: cnvrt, mimetype: 'audio/mpeg'}, { quoted: msg })
             }
-            break
+            break*/
 	        case 'instagram': case 'ig': case 'igdl': {
                 if (!text) throw 'No Query Url!'
                 m.reply(mess.wait)
