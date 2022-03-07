@@ -1874,9 +1874,10 @@ break
             case'ttdl':
             case 'tiktok':
 urlny = args[0]
+if(!urlny) throw "url nya mana"
 type = args[1]
 var { TiktokDownloader } = require('./lib/tiktokdl')
-if(!urlny) throw "url nya mana"
+res = await TiktokDownloader(`${urlny}`)
 if (!type) {
 let buttons = [
                     {buttonId: `tiktoknowm ${urlny} ${type}`, buttonText: {displayText: '► Watermark'}, type: 1},
