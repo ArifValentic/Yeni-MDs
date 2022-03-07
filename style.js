@@ -1869,8 +1869,11 @@ let buttons1 = [
                     headerType: 2
                 }
                 let msg = await style.sendMessage(m.chat, buttonMessage2, { quoted: m })
-                style.sendMessage(m.chat, { document { url: audio.result.audio_only.original } }, { quoted: msg })
-            }
+                let { toAudio } = require('./lib/converter')
+		let nganu = await getBuffer(anu.result.nowatermark)
+		let cnvrt = await toAudio(nganu, 'mp4')   
+                style.sendMessage(m.chat, { audio: cnvrt, mimetype: 'audio/mpeg'}, { quoted: msg })                  
+                  }
             break	           	          	
 	        /*case 'tiktok': case 'tiktoknowm': {
                 if (!text) throw 'Masukkan Query Link!'
