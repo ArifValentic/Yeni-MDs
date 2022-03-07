@@ -51,7 +51,7 @@ module.exports = style = async (style, m, chatUpdate, store) => {
         var budy = (typeof m.text == 'string' ? m.text : '')
         var prefix = prefa ? /^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@#$%^&.©^]/gi.test(body) ? body.match(/^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@#$%^&.©^]/gi)[0] : "" : prefa ?? global.prefix
         const isCmd = body.startsWith(prefix)
-        
+        const from = m.key.remoteJid
         const command = body.replace(prefix, '').trim().split(/ +/).shift().toLowerCase()
         const args = body.trim().split(/ +/).slice(1)
         const pushname = m.pushName || "No Name"
@@ -1809,26 +1809,46 @@ break
                 style.sendText(m.chat, `⭔ *Hasil :* ${anu.message}`, m)
             }
             break
-            case 'ttnowm':
+            case 'ttnowm': case 'tiktokmp3':
 	m.reply('tunggu anta')
 	kntl = `${q}`
 	mmk = await TiktokDownloader(kntl)
 	link_bkp = mmk.result.nowatermark
 	sendFileFromUrl(from,link_bkp,'Done',m)
+	 let buttons = [
+                    {buttonId: `tiktokwm ${text}`, buttonText: {displayText: '► With Watermark'}, type: 1},
+                    {buttonId: `tiktokmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
+                ]
+                let buttonMessage = {
+                    video: { url: mmk.result.nowatermark },
+                    caption: `Download From ${text}`,
+                    footer: 'Press The Button Below',
+                    buttons: buttons,
+                    headerType: 5
+                }
+                style.sendMessage(m.chat, buttonMessage, { quoted: m })
+  
 	break
-	case 'ttwm':
+	case 'ttwm': 
 	m.reply('sabar woi')
 	kntl = `${q}`
 	mmk = await TiktokDownloader(kntl)
 	link_bkp = mmk.result.watermark
 	sendFileFromUrl(from,link_bkp,'Done',m)
-	break
-	case 'ttmp3':
-		   m.reply(mess.wait)
-		   audio = await fetchJson(`http://hadi-api.herokuapp.com/api/tiktok?url=${q}`)
-		   audio = audio.result.audio_only.original
-		   cafnay.sendMessage(m.chat, {document: {url: audio}, mimetype: 'audio/mpeg', fileName: `audio_tiktok.mp3`}, {quoted:m})
-		   break
+	let buttons = [
+                    {buttonId: `tiktoknowm ${text}`, buttonText: {displayText: '► No Watermark'}, type: 1},
+                    {buttonId: `tiktokmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
+                ]
+                let buttonMessage = {
+                    video: { url: mmk.result.watermark },
+                    caption: `Download From ${text}`,
+                    footer: 'Press The Button Below',
+                    buttons: buttons,
+                    headerType: 5
+                }
+                style.sendMessage(m.chat, buttonMessage, { quoted: m })
+  
+	break	           	
 	        /*case 'tiktok': case 'tiktoknowm': {
                 if (!text) throw 'Masukkan Query Link!'
                 m.reply(mess.wait)
