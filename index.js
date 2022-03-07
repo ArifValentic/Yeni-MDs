@@ -256,6 +256,25 @@ async function startstyle() {
         return await style.sendMessage(jid, { audio: buffer, ptt: ptt, ...options }, { quoted })
     }
 
+const sendFileFromUrl = async (from, url, caption, m, men) => {
+            let mime = '';
+            let res = await axios.head(url)
+            mime = res.headers['content-type']
+            if (mime.split("/")[1] === "gif") {
+                return style.sendMessage(from, { video: await getBuffer(url), caption: caption, gifPlayback: true, mentions: men ? men : []}, {quoted: m})
+                }
+            let type = mime.split("/")[0]+"Message"
+            if(mime.split("/")[0] === "image"){
+                return style.sendMessage(from, { image: await getBuffer(url), caption: caption, mentions: men ? men : []}, {quoted: m})
+            } else if(mime.split("/")[0] === "video"){
+                return style.sendMessage(from, { video: await getBuffer(url), caption: caption, mentions: men ? men : []}, {quoted: m})
+            } else if(mime.split("/")[0] === "audio"){
+                return style.sendMessage(from, { audio: await getBuffer(url), caption: caption, mentions: men ? men : [], mimetype: 'audio/mpeg'}, {quoted: m })
+            } else {
+                return style.sendMessage(from, { document: await getBuffer(url), mimetype: mime, caption: caption, mentions: men ? men : []}, {quoted: m })
+            }
+        }
+
     /**
      * 
      * @param {*} jid 

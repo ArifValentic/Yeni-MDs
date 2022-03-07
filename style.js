@@ -81,27 +81,7 @@ module.exports = style = async (style, m, chatUpdate, store) => {
         if (m.message) {
             style.sendReadReceipt(m.chat, m.sender, [m.key.id])
             console.log(chalk.black(chalk.bgWhite('[ PESAN ]')), chalk.black(chalk.bgGreen(new Date)), chalk.black(chalk.bgBlue(budy || m.mtype)) + '\n' + chalk.magenta('=> Dari'), chalk.green(pushname), chalk.yellow(m.sender) + '\n' + chalk.blueBright('=> Di'), chalk.green(m.isGroup ? pushname : 'Private Chat', m.chat))
-        }
-	
-                //SendMediaUrl
-            const sendFileFromUrl = async (from, url, caption, msg, men) => {
-            let mime = '';
-            let res = await axios.head(url)
-            mime = res.headers['content-type']
-            if (mime.split("/")[1] === "gif") {
-                return style.sendMessage(m.chat, { video: await convertGif(url), caption: caption, gifPlayback: true, mentions: men ? men : []}, {quoted: m})
-                }
-            let type = mime.split("/")[0]+"Message"
-            if(mime.split("/")[0] === "image"){
-                return style.sendMessage(m.chat, { image: await getBuffer(url), caption: caption, mentions: men ? men : []}, {quoted: m})
-            } else if(mime.split("/")[0] === "video"){
-                return style.sendMessage(m.chat, { video: await getBuffer(url), caption: caption, mentions: men ? men : []}, {quoted: m})
-            } else if(mime.split("/")[0] === "audio"){
-                return style.sendMessage(m.chat, { audio: await getBuffer(url), caption: caption, mentions: men ? men : [], mimetype: 'audio/mpeg'}, {quoted: m })
-            } else {l
-                return style.sendMessage(m.chat, { document: await getBuffer(url), mimetype: mime, caption: caption, mentions: men ? men : []}, {quoted: m })
-            }
-        }
+        }	
 
 	// write database every 1 minute
 	setInterval(() => {
@@ -1858,63 +1838,7 @@ let buttons1 = [
 		   audio = audio.result.audio_only.original
 		   cafnay.sendMessage(m.chat, {document: {url: audio}, mimetype: 'audio/mpeg', fileName: `audio_tiktok.mp3`}, {quoted:m})		   
 		   break	           	          	
-	        /*case 'tiktok': case 'tiktoknowm': {
-                if (!text) throw 'Masukkan Query Link!'
-                m.reply(mess.wait)
-                let anu = await fetchJson(api('zenz', '/downloader/tiktok', { url: text }, 'apikey'))
-                let buttons = [
-                    {buttonId: `tiktokwm ${text}`, buttonText: {displayText: '► With Watermark'}, type: 1},
-                    {buttonId: `tiktokmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
-                ]
-                let buttonMessage = {
-                    video: { url: anu.result.nowatermark },
-                    caption: `Download From ${text}`,
-                    footer: 'Press The Button Below',
-                    buttons: buttons,
-                    headerType: 5
-                }
-                style.sendMessage(m.chat, buttonMessage, { quoted: m })
-            }
-            break*/
-            /*case 'tiktokwm': case 'tiktokwatermark': {
-                if (!text) throw 'Masukkan Query Link!'
-                m.reply(mess.wait)
-                let anu = await fetchJson(api('zenz', '/downloader/tiktok', { url: text }, 'apikey'))
-                let buttons = [
-                    {buttonId: `tiktoknowm ${text}`, buttonText: {displayText: '► No Watermark'}, type: 1},
-                    {buttonId: `tiktokmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
-                ]
-                let buttonMessage = {
-                    video: { url: anu.result.watermark },
-                    caption: `Download From ${text}`,
-                    footer: 'Press The Button Below',
-                    buttons: buttons,
-                    headerType: 5
-                }
-                style.sendMessage(m.chat, buttonMessage, { quoted: m })
-            }
-            break
-            case 'tiktokmp3': case 'tiktokaudio': {
-                if (!text) throw 'Masukkan Query Link!'
-                m.reply(mess.wait)
-                let anu = await fetchJson(api('zenz', '/downloader/tiktok', { url: text }, 'apikey'))
-                let buttons = [
-                    {buttonId: `tiktoknowm ${text}`, buttonText: {displayText: '► No Watermark'}, type: 1},
-                    {buttonId: `tiktokwm ${text}`, buttonText: {displayText: '► With Watermark'}, type: 1}
-                ]
-                let buttonMessage = {
-                    text: `Download From ${text}`,
-                    footer: 'Press The Button Below',
-                    buttons: buttons,
-                    headerType: 2
-                }
-                let msg = await style.sendMessage(m.chat, buttonMessage, { quoted: m })
-		let { toAudio } = require('./lib/converter')
-		let nganu = await getBuffer(anu.result.nowatermark)
-		let cnvrt = await toAudio(nganu, 'mp4')
-                style.sendMessage(m.chat, { audio: cnvrt, mimetype: 'audio/mpeg'}, { quoted: msg })
-            }
-            break*/
+	        
 	        case 'instagram': case 'ig': case 'igdl': {
                 if (!text) throw 'No Query Url!'
                 m.reply(mess.wait)
