@@ -427,10 +427,10 @@ During ${clockString(new Date - user.afkTime)}
             break	
           case 'absen':
 global.db.data.absen = global.db.data.absen || {} 
-if (!(from in global.db.data.absen)) return reply(`Tidak ada absen berlangsung!`) 
+if (!(from in global.db.data.absen)) return m.reply (`Tidak ada absen berlangsung!`) 
 let absen = global.db.data.absen[from][1] 
 const wasVote = absen.includes(m.sender) 
-if (wasVote)return reply('Kamu sudah absen!')
+if (wasVote)return m.reply('Kamu sudah absen!')
 absen.push(m.sender) 
 let d = new Date 
 let date = d.toLocaleDateString('id', { 
@@ -453,7 +453,7 @@ break
 
 case 'cekabsen':
 global.db.data.absen = global.db.data.absen || {}
-if (!(from in global.db.data.absen))return reply(`Tidak ada absen berlangsung!`)
+if (!(from in global.db.data.absen))return m.reply(`Tidak ada absen berlangsung!`)
 let dd = new Date 
 let datee = dd.toLocaleDateString('id', { 
   day: 'numeric', 
@@ -473,22 +473,22 @@ break
 
 case 'deleteabsen':
 if (!m.isGroup) { 
-  if (!(m.isGroup || isCreator))return reply('Only Admin')
+  if (!(m.isGroup || isCreator))return m.reply('Only Admin')
   } 
   global.db.data.absen = global.db.data.absen || {}
-  if (!(from in global.db.data.absen))return reply(`Tidak ada absen berlangsung!`)
+  if (!(from in global.db.data.absen))return m.reply(`Tidak ada absen berlangsung!`)
   delete global.db.data.absen[from]
 m.reply(`Absen berhasil dihapus`)
 break
 
 
 case 'absenstart':
-if (!q)return reply('Absennya apa?')
+if (!q)return m.reply('Absennya apa?')
 if (!m.isGroup) { 
-  if (!(m.isGroup || isCreator))return reply('Only Admin')
+  if (!(m.isGroup || isCreator))return m.reply('Only Admin')
 } 
 global.db.data.absen = global.db.data.absen || {}
-if (from in global.db.data.absen)return reply(`Masih ada absen di chat ini!`)
+if (from in global.db.data.absen)return m.reply(`Masih ada absen di chat ini!`)
 global.db.data.absen[from] = [
   await style.sendMessage(from,{text:'Absen Di Mulai..'},{quoted:msg}),
   [], 
