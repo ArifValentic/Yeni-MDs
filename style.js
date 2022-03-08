@@ -490,7 +490,7 @@ if (!m.isGroup) {
 global.db.data.absen = global.db.data.absen || {}
 if (from in global.db.data.absen)return m.reply(`Masih ada absen di chat ini!`)
 global.db.data.absen[from] = [
-  await style.sendMessage(from,{text:'Absen Di Mulai..'},{quoted:msg}),
+  await style.sendMessage(from,{text:'Absen Di Mulai..'},{ quoted: m }),
   [], 
   q ]
 break 	            
