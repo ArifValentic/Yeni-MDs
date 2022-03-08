@@ -424,7 +424,76 @@ During ${clockString(new Date - user.afkTime)}
                 user.afkReason = text
                 m.reply(`${m.pushName} Telah Afk${text ? ': ' + text : ''}`)
             }
-            break		            
+            break	
+          case 'absen':
+global.db.data.absen = global.db.data.absen || {} 
+if (!(from in global.db.data.absen)) return reply(`Tidak ada absen berlangsung!`) 
+let absen = global.db.data.absen[from][1] 
+const wasVote = absen.includes(M.sender) 
+if (wasVote)return reply('Kamu sudah absen!')
+absen.push(M.sender) 
+let d = new Date 
+let date = d.toLocaleDateString('id', { 
+  day: 'numeric', 
+  month: 'long', 
+  year: 'numeric' 
+}) 
+let list = absen.map((v, i) => `│ ${i + 1}. @${v.split`@`[0]}`).join('\n') 
+let caption = `Tanggal: ${date}
+
+${global.db.data.absen[from][2] ? global.db.data.absen[from][2] + '\n' : ''}
+╭─「 Daftar Absen 」
+│ Total: ${absen.length}
+${list}
+╰────`.trim()
+await replyNtag(caption)
+//style.sendMessage(from,{text : caption},{quoted:msg})
+break
+
+
+case 'cekabsen':
+global.db.data.absen = global.db.data.absen || {}
+if (!(from in global.db.data.absen))return reply(`Tidak ada absen berlangsung!`)
+let dd = new Date 
+let datee = dd.toLocaleDateString('id', { 
+  day: 'numeric', 
+  month: 'long', 
+  year: 'numeric' 
+}) 
+let absenn = global.db.data.absen[from][1] 
+let listt = absenn.map((v, i) => `│ ${i + 1}. @${v.split`@`[0]}`).join('\n') 
+let captionn = `Tanggal: ${datee}
+${global.db.data.absen[from][2] ? global.db.data.absen[from][2] + '\n' : ''}
+╭─「 Daftar Absen 」
+│ Total: ${absenn.length}
+${listt}
+╰────`.trim() 
+replyNtag(captionn)
+break
+
+case 'deleteabsen':
+if (!m.isGroup) { 
+  if (!(m.isGroup || isCreator))return reply('Only Admin')
+  } 
+  global.db.data.absen = global.db.data.absen || {}
+  if (!(from in global.db.data.absen))return reply(`Tidak ada absen berlangsung!`)
+  delete global.db.data.absen[from]
+M.reply(`Absen berhasil dihapus`)
+break
+
+
+case 'absenstart':
+if(!q)return reply('Absennya apa?')
+if (!m.isGroup) { 
+  if (!(m.isGroup || isCreator))return reply('Only Admin')
+} 
+global.db.data.absen = global.db.data.absen || {}
+if (from in global.db.data.absen)return reply(`Masih ada absen di chat ini!`)
+global.db.data.absen[from] = [
+  await style.sendMessage(from,{text:'Absen Di Mulai..'},{quoted:msg}),
+  [], 
+  q ]
+break 	            
         case 'ttc': case 'ttt': case 'tictactoe': {
             let TicTacToe = require("./lib/tictactoe")
             this.game = this.game ? this.game : {}
