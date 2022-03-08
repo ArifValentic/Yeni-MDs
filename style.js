@@ -419,7 +419,7 @@ During ${clockString(new Date - user.afkTime)}
 	    
         switch(command) {
 	    case 'afk': {
-                let user = global.db.users[m.sender]
+                let user = global.db.data.users[m.sender]
                 user.afkTime = + new Date
                 user.afkReason = text
                 m.reply(`${m.pushName} Telah Afk${text ? ': ' + text : ''}`)
