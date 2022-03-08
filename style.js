@@ -429,9 +429,9 @@ During ${clockString(new Date - user.afkTime)}
 global.db.data.absen = global.db.data.absen || {} 
 if (!(from in global.db.data.absen)) return reply(`Tidak ada absen berlangsung!`) 
 let absen = global.db.data.absen[from][1] 
-const wasVote = absen.includes(M.sender) 
+const wasVote = absen.includes(m.sender) 
 if (wasVote)return reply('Kamu sudah absen!')
-absen.push(M.sender) 
+absen.push(m.sender) 
 let d = new Date 
 let date = d.toLocaleDateString('id', { 
   day: 'numeric', 
@@ -446,7 +446,7 @@ ${global.db.data.absen[from][2] ? global.db.data.absen[from][2] + '\n' : ''}
 │ Total: ${absen.length}
 ${list}
 ╰────`.trim()
-await replyNtag(caption)
+await m.reply(caption)
 //style.sendMessage(from,{text : caption},{quoted:msg})
 break
 
@@ -468,7 +468,7 @@ ${global.db.data.absen[from][2] ? global.db.data.absen[from][2] + '\n' : ''}
 │ Total: ${absenn.length}
 ${listt}
 ╰────`.trim() 
-replyNtag(captionn)
+m.reply(captionn)
 break
 
 case 'deleteabsen':
@@ -478,12 +478,12 @@ if (!m.isGroup) {
   global.db.data.absen = global.db.data.absen || {}
   if (!(from in global.db.data.absen))return reply(`Tidak ada absen berlangsung!`)
   delete global.db.data.absen[from]
-M.reply(`Absen berhasil dihapus`)
+m.reply(`Absen berhasil dihapus`)
 break
 
 
 case 'absenstart':
-if(!q)return reply('Absennya apa?')
+if (!q)return reply('Absennya apa?')
 if (!m.isGroup) { 
   if (!(m.isGroup || isCreator))return reply('Only Admin')
 } 
