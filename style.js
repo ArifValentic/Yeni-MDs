@@ -77,20 +77,20 @@ module.exports = style = async (style, m, chatUpdate, store) => {
 	
 	         // Database
         /*try {
-	    let users = global.db.data.users[m.sender]
-	    if (typeof users !== 'object') global.db.data.users[m.sender] = {}
+	    let users = global.db.data.data.users[m.sender]
+	    if (typeof users !== 'object') global.db.data.data.users[m.sender] = {}
 	    if (users) {
 		if (!isNumber(users.afkTime)) users.afkTime = -1
 		if (!('banned' in users)) users.banned = false
 		if (!('afkReason' in users)) users.afkReason = ''
-	    } else global.db.data.users[m.sender] = {
+	    } else global.db.data.data.users[m.sender] = {
 		afkTime: -1,
 	    banned: false,
 		afkReason: '',
 	    }
 	     
-	    let chats = global.db.data.chats[m.chat]
-	    if (typeof chats !== 'object') global.db.data.chats[m.chat] = {}
+	    let chats = global.db.data.data.chats[m.chat]
+	    if (typeof chats !== 'object') global.db.data.data.chats[m.chat] = {}
 	    if (chats) {
 		if (!('antionce' in chats)) chats.antionce = true
         if (!('mute' in chats)) chats.mute = false
@@ -100,7 +100,7 @@ module.exports = style = async (style, m, chatUpdate, store) => {
 	    if (!('setPromote' in chat)) chat.setPromote = ''
 	    if (!('setWelcome' in chat)) chat.setWelcome = ''
 	    if (!('setLeave' in chat)) chat.setLeave = ''
-	    } else global.db.data.chats[m.chat] = {
+	    } else global.db.data.data.chats[m.chat] = {
 		antionce: true,
 		mute: false,
 		antispam: true,
@@ -111,13 +111,13 @@ module.exports = style = async (style, m, chatUpdate, store) => {
         setLeave: '',
 	    }
 	    
-            let settings = global.db.data.settings[botNumber]
-            if (typeof settings !== 'object') global.db.data.settings[botNumber] = {}
+            let settings = global.db.data.data.settings[botNumber]
+            if (typeof settings !== 'object') global.db.data.data.settings[botNumber] = {}
             if (settings) {
             if (!('available' in settings)) settings.available = false
             if (!('composing' in settings)) settings.composing = false
             if (!('recording' in settings)) settings.recording = false
-            } else global.db.data.settings[botNumber] = {
+            } else global.db.data.data.settings[botNumber] = {
                 available: false,
                 composing: false,
                 recording: false,
@@ -145,9 +145,9 @@ module.exports = style = async (style, m, chatUpdate, store) => {
 	/*reset limit every 12 hours
         let cron = require('node-cron')
         cron.schedule('00 12 * * *', () => {
-            let user = Object.keys(global.db.data.users)
+            let user = Object.keys(global.db.data.data.users)
             let limitUser = isPremium ? global.limitawal.premium : global.limitawal.free
-            for (let jid of user) global.db.data.users[jid].limit = limitUser
+            for (let jid of user) global.db.data.data.users[jid].limit = limitUser
             console.log('Reseted Limit')
         }, {
             scheduled: true,
@@ -155,8 +155,8 @@ module.exports = style = async (style, m, chatUpdate, store) => {
         })*/
 	    
         // Respon Cmd with media
-        if (isMedia && m.msg.fileSha256 && (m.msg.fileSha256.toString('base64') in global.db.sticker)) {
-        let hash = global.db.sticker[m.msg.fileSha256.toString('base64')]
+       /* if (isMedia && m.msg.fileSha256 && (m.msg.fileSha256.toString('base64') in global.db.data.sticker)) {
+        let hash = global.db.data.sticker[m.msg.fileSha256.toString('base64')]
         let { text, mentionedJid } = hash
         let messages = await generateWAMessage(m.chat, { text: text, mentions: mentionedJid }, {
             userJid: style.user.id,
@@ -172,7 +172,7 @@ module.exports = style = async (style, m, chatUpdate, store) => {
             type: 'append'
         }
         style.ev.emit('messages.upsert', msg)
-        }
+        }*/
 	    
 	if (('family100'+m.chat in _family100) && isCmd) {
             kuis = true
@@ -410,7 +410,7 @@ klik https://wa.me/${botNumber.split`@`[0]}`, m, { mentions: [roof.p, roof.p2] }
 	    
 	    	    // Afk
 	/*for (let jid of mentionUser) {
-            let user = global.db.data.users[jid]
+            let user = global.db.data.data.users[jid]
             if (!user) continue
             let afkTime = user.afkTime
             if (!afkTime || afkTime < 0) continue
@@ -423,7 +423,7 @@ During ${clockString(new Date - afkTime)}
         }
 	    
 	if (db.data.users[m.sender].afkTime > -1) {
-            let user = global.db.data.users[m.sender]
+            let user = global.db.data.data.users[m.sender]
             m.reply(`
 You quit AFK${user.afkReason ? ' after ' + user.afkReason : ''}
 During ${clockString(new Date - user.afkTime)}
@@ -434,7 +434,7 @@ During ${clockString(new Date - user.afkTime)}
 	    
         switch(command) {
 	    /*case 'afk': {
-                let user = global.db.data.users[m.sender]
+                let user = global.db.data.data.users[m.sender]
                 user.afkTime = + new Date
                 user.afkReason = text
                 m.reply(`${m.pushName} Telah Afk${text ? ': ' + text : ''}`)
@@ -2232,8 +2232,8 @@ ${id}`)
                 if (!m.quoted.fileSha256) throw 'SHA256 Hash Missing'
                 if (!text) throw `Untuk Command Apa?`
                 let hash = m.quoted.fileSha256.toString('base64')
-                if (global.db.sticker[hash] && global.db.sticker[hash].locked) throw 'You have no permission to change this sticker command'
-                global.db.sticker[hash] = {
+                if (global.db.data.sticker[hash] && global.db.data.sticker[hash].locked) throw 'You have no permission to change this sticker command'
+                global.db.data.sticker[hash] = {
                     text,
                     mentionedJid: m.mentionedJid,
                     creator: m.sender,
@@ -2246,8 +2246,8 @@ ${id}`)
             case 'delcmd': {
                 let hash = m.quoted.fileSha256.toString('base64')
                 if (!hash) throw `Tidak ada hash`
-                if (global.db.sticker[hash] && global.db.sticker[hash].locked) throw 'You have no permission to delete this sticker command'              
-                delete global.db.sticker[hash]
+                if (global.db.data.sticker[hash] && global.db.data.sticker[hash].locked) throw 'You have no permission to delete this sticker command'              
+                delete global.db.data.sticker[hash]
                 m.reply(`Done!`)
             }
             break
@@ -2255,9 +2255,9 @@ ${id}`)
                 let teks = `
 *List Hash*
 Info: *bold* hash is Locked
-${Object.entries(global.db.sticker).map(([key, value], index) => `${index + 1}. ${value.locked ? `*${key}*` : key} : ${value.text}`).join('\n')}
+${Object.entries(global.db.data.sticker).map(([key, value], index) => `${index + 1}. ${value.locked ? `*${key}*` : key} : ${value.text}`).join('\n')}
 `.trim()
-                style.sendText(m.chat, teks, m, { mentions: Object.values(global.db.sticker).map(x => x.mentionedJid).reduce((a,b) => [...a, ...b], []) })
+                style.sendText(m.chat, teks, m, { mentions: Object.values(global.db.data.sticker).map(x => x.mentionedJid).reduce((a,b) => [...a, ...b], []) })
             }
             break
             case 'lockcmd': {
@@ -2265,15 +2265,15 @@ ${Object.entries(global.db.sticker).map(([key, value], index) => `${index + 1}. 
                 if (!m.quoted) throw 'Reply Pesan!'
                 if (!m.quoted.fileSha256) throw 'SHA256 Hash Missing'
                 let hash = m.quoted.fileSha256.toString('base64')
-                if (!(hash in global.db.sticker)) throw 'Hash not found in database'
-                global.db.sticker[hash].locked = !/^un/i.test(command)
+                if (!(hash in global.db.data.sticker)) throw 'Hash not found in database'
+                global.db.data.sticker[hash].locked = !/^un/i.test(command)
                 m.reply('Done!')
             }
             break
             case 'addmsg': {
                 if (!m.quoted) throw 'Reply Message Yang Ingin Disave Di Database'
                 if (!text) throw `Example : ${prefix + command} nama file`
-                let msgs = global.db.database
+                let msgs = global.db.data.database
                 if (text.toLowerCase() in msgs) throw `'${text}' telah terdaftar di list pesan`
                 msgs[text.toLowerCase()] = quoted.fakeObj
 m.reply(`Berhasil menambahkan pesan di list pesan sebagai '${text}'
@@ -2285,14 +2285,14 @@ Lihat list Pesan Dengan ${prefix}listmsg`)
             break
             case 'getmsg': {
                 if (!text) throw `Example : ${prefix + command} file name\n\nLihat list pesan dengan ${prefix}listmsg`
-                let msgs = global.db.database
+                let msgs = global.db.data.database
                 if (!(text.toLowerCase() in msgs)) throw `'${text}' tidak terdaftar di list pesan`
                 style.copyNForward(m.chat, msgs[text.toLowerCase()], true)
             }
             break
             case 'listmsg': {
                 let msgs = JSON.parse(fs.readFileSync('./src/database.json'))
-	        let seplit = Object.entries(global.db.database).map(([nama, isi]) => { return { nama, ...isi } })
+	        let seplit = Object.entries(global.db.data.database).map(([nama, isi]) => { return { nama, ...isi } })
 		let teks = '「 LIST DATABASE 」\n\n'
 		for (let i of seplit) {
 		    teks += `⬡ *Name :* ${i.nama}\n⬡ *Type :* ${getContentType(i.message).replace(/Message/i, '')}\n────────────────────────\n\n`
@@ -2301,7 +2301,7 @@ Lihat list Pesan Dengan ${prefix}listmsg`)
 	    }
 	    break
             case 'delmsg': case 'deletemsg': {
-	        let msgs = global.db.database
+	        let msgs = global.db.data.database
 	        if (!(text.toLowerCase() in msgs)) return m.reply(`'${text}' tidak terdaftar didalam list pesan`)
 		delete msgs[text.toLowerCase()]
 		m.reply(`Berhasil menghapus '${text}' dari list pesan`)
@@ -2869,7 +2869,7 @@ ${cpus.map((cpu, i) => `${i + 1}. ${cpu.model.trim()} (${cpu.speed} MHZ)\n${Obje
 		/*if (isCmd && budy.toLowerCase() != undefined) {
 		    if (m.chat.endsWith('broadcast')) return
 		    if (m.isBaileys) return
-		    let msgs = global.db.database
+		    let msgs = global.db.data.database
 		    if (!(budy.toLowerCase() in msgs)) return
 		    style.copyNForward(m.chat, msgs[budy.toLowerCase()], true)
 		}*/
