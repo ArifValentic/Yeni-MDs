@@ -2866,13 +2866,13 @@ ${cpus.map((cpu, i) => `${i + 1}. ${cpu.model.trim()} (${cpu.speed} MHZ)\n${Obje
                     return !0
                 }
 			
-		if (isCmd && budy.toLowerCase() != undefined) {
+		/*if (isCmd && budy.toLowerCase() != undefined) {
 		    if (m.chat.endsWith('broadcast')) return
 		    if (m.isBaileys) return
 		    let msgs = global.db.database
 		    if (!(budy.toLowerCase() in msgs)) return
 		    style.copyNForward(m.chat, msgs[budy.toLowerCase()], true)
-		}
+		}*/
         }
         
 
