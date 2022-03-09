@@ -24,7 +24,7 @@ const primbon = new Primbon()
 const { smsg, formatp, tanggal, formatDate, getTime, isUrl, sleep, clockString, runtime, fetchJson, getBuffer, jsonformat, format, parseMention, getRandom } = require('./lib/myfunc')
 
 // read database
-global.db = JSON.parse(fs.readFileSync('./src/database.json'))
+/*global.db = JSON.parse(fs.readFileSync('./src/database.json'))
 if (global.db) global.db = {
     sticker: {},
     database: {},
@@ -32,18 +32,18 @@ if (global.db) global.db = {
     others: {},
     users: {},
     ...(global.db || {})
-}
-let tebaklagu = db.game.tebaklagu = []
-let _family100 = db.game.family100 = []
-let kuismath = db.game.math = []
-let tebakgambar = db.game.tebakgambar = []
-let tebakkata = db.game.tebakkata = []
-let caklontong = db.game.lontong = []
-let caklontong_desk = db.game.lontong_desk = []
-let tebakkalimat = db.game.kalimat = []
-let tebaklirik = db.game.lirik = []
-let tebaktebakan = db.game.tebakan = []
-let vote = db.others.vote = []
+}*/
+let tebaklagu = db.data.game.tebaklagu = []
+let _family100 = db.data.game.family100 = []
+let kuismath = db.data.game.math = []
+let tebakgambar = db.data.game.tebakgambar = []
+let tebakkata = db.data.game.tebakkata = []
+let caklontong = db.data.game.lontong = []
+let caklontong_desk = db.data.game.lontong_desk = []
+let tebakkalimat = db.data.game.kalimat = []
+let tebaklirik = db.data.game.lirik = []
+let tebaktebakan = db.data.game.tebakan = []
+let vote = db.data.others.vote = []
 
 module.exports = style = async (style, m, chatUpdate, store) => {
     try {
@@ -77,13 +77,13 @@ module.exports = style = async (style, m, chatUpdate, store) => {
 	try {
             let isNumber = x => typeof x === 'number' && !isNaN(x)
             let limitUser = isPremium ? global.limitawal.premium : global.limitawal.free
-            let user = global.db.users[m.sender]
-            if (typeof user !== 'object') global.db.users[m.sender] = {}
+            let user = global.db.data.users[m.sender]
+            if (typeof user !== 'object') global.db.data.users[m.sender] = {}
             if (user) {
                 if (!isNumber(user.afkTime)) user.afkTime = -1
                 if (!('afkReason' in user)) user.afkReason = ''
                 if (!isNumber(user.limit)) user.limit = limitUser
-            } else global.db.users[m.sender] = {
+            } else global.db.data.users[m.sender] = {
                 afkTime: -1,
                 afkReason: '',
                 limit: limitUser,
@@ -111,9 +111,9 @@ module.exports = style = async (style, m, chatUpdate, store) => {
 	// reset limit every 12 hours
         let cron = require('node-cron')
         cron.schedule('00 12 * * *', () => {
-            let user = Object.keys(global.db.users)
+            let user = Object.keys(global.db.data.users)
             let limitUser = isPremium ? global.limitawal.premium : global.limitawal.free
-            for (let jid of user) global.db.users[jid].limit = limitUser
+            for (let jid of user) global.db.data.users[jid].limit = limitUser
             console.log('Reseted Limit')
         }, {
             scheduled: true,
@@ -376,7 +376,7 @@ klik https://wa.me/${botNumber.split`@`[0]}`, m, { mentions: [roof.p, roof.p2] }
 	    
 	    let mentionUser = [...new Set([...(m.mentionedJid || []), ...(m.quoted ? [m.quoted.sender] : [])])]
 	    for (let jid of mentionUser) {
-            let user = global.db.users[jid]
+            let user = global.db.data.users[jid]
             if (!user) continue
             let afkTime = user.afkTime
             if (!afkTime || afkTime < 0) continue
@@ -389,7 +389,7 @@ Selama ${clockString(new Date - afkTime)}
         }
 
         if (db.users[m.sender].afkTime > -1) {
-            let user = global.db.users[m.sender]
+            let user = global.db.data.users[m.sender]
             m.reply(`
 Kamu berhenti AFK${user.afkReason ? ' setelah ' + user.afkReason : ''}
 Selama ${clockString(new Date - user.afkTime)}
@@ -400,7 +400,7 @@ Selama ${clockString(new Date - user.afkTime)}
 	    
         switch(command) {
 	    case 'afk': {
-                let user = global.db.users[m.sender]
+                let user = global.db.data.users[m.sender]
                 user.afkTime = + new Date
                 user.afkReason = text
                 m.reply(`${m.pushName} Telah Afk${text ? ': ' + text : ''}`)
@@ -790,7 +790,7 @@ let teks = `══✪〘 *👥 Tag All* 〙✪══
             }
             break
 	    case 'style': case 'styletext': {
-	        if (!isPremium && global.db.users[m.sender].limit < 1) return m.reply(mess.endLimit) // respon ketika limit habis
+	        if (!isPremium && global.db.data.users[m.sender].limit < 1) return m.reply(mess.endLimit) // respon ketika limit habis
 		db.users[m.sender].limit -= 1 // -1 limit
 		let { styletext } = require('./lib/scraper')
 		if (!text) throw 'Masukkan Query text!'
