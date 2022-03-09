@@ -76,7 +76,7 @@ module.exports = style = async (style, m, chatUpdate, store) => {
 	
 	
 	         // Database
-        try {
+        /*try {
 	    let users = global.db.data.users[m.sender]
 	    if (typeof users !== 'object') global.db.data.users[m.sender] = {}
 	    if (users) {
@@ -124,7 +124,7 @@ module.exports = style = async (style, m, chatUpdate, store) => {
             }
         } catch (err) {
             console.log(err)
-        }
+        }*/
 	
         // Public & Self
         if (!style.public) {
@@ -409,7 +409,7 @@ klik https://wa.me/${botNumber.split`@`[0]}`, m, { mentions: [roof.p, roof.p2] }
 	    }
 	    
 	    	    // Afk
-	for (let jid of mentionUser) {
+	/*for (let jid of mentionUser) {
             let user = global.db.data.users[jid]
             if (!user) continue
             let afkTime = user.afkTime
@@ -430,16 +430,16 @@ During ${clockString(new Date - user.afkTime)}
 `.trim())
             user.afkTime = -1
             user.afkReason = ''
-        }
+        }*/
 	    
         switch(command) {
-	    case 'afk': {
+	    /*case 'afk': {
                 let user = global.db.data.users[m.sender]
                 user.afkTime = + new Date
                 user.afkReason = text
                 m.reply(`${m.pushName} Telah Afk${text ? ': ' + text : ''}`)
             }
-            break		
+            break*/		
         case 'ttc': case 'ttt': case 'tictactoe': {
             let TicTacToe = require("./lib/tictactoe")
             this.game = this.game ? this.game : {}
