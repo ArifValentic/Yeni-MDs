@@ -62,6 +62,7 @@ module.exports = style = async (style, m, chatUpdate, store) => {
         const quoted = m.quoted ? m.quoted : m
         const mime = (quoted.msg || quoted).mimetype || ''
 	    const isMedia = /image|video|sticker|audio/.test(mime)
+	    const mentionUser = [...new Set([...(m.mentionedJid || []), ...(m.quoted ? [m.quoted.sender] : [])])]			
 	
         // Group
         const groupMetadata = m.isGroup ? await style.groupMetadata(m.chat).catch(e => {}) : ''
