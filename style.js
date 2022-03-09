@@ -388,7 +388,7 @@ Selama ${clockString(new Date - afkTime)}
 `.trim())
         }
 
-        if (db.users[m.sender].afkTime > -1) {
+        if (db.data.users[m.sender].afkTime > -1) {
             let user = global.db.data.users[m.sender]
             m.reply(`
 Kamu berhenti AFK${user.afkReason ? ' setelah ' + user.afkReason : ''}
@@ -791,7 +791,7 @@ let teks = `══✪〘 *👥 Tag All* 〙✪══
             break
 	    case 'style': case 'styletext': {
 	        if (!isPremium && global.db.data.users[m.sender].limit < 1) return m.reply(mess.endLimit) // respon ketika limit habis
-		db.users[m.sender].limit -= 1 // -1 limit
+		db.data.users[m.sender].limit -= 1 // -1 limit
 		let { styletext } = require('./lib/scraper')
 		if (!text) throw 'Masukkan Query text!'
                 let anu = await styletext(text)
