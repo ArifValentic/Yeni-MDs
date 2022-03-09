@@ -1098,7 +1098,7 @@ break
                                     id: 'sc'
                                 }
                             }]
-                      fatihgans = fs.readFileSync('./lib/style.jpg')
+                      fatihgans = global.thumb
                       let txt = `「 Broadcast Bot 」\n\n${text}`
                       style.send5ButImg(i, txt, style.user.name, fatihgans, btn)
                     }
@@ -1138,7 +1138,7 @@ break
                                     id: 'sc'
                                 }
                             }]
-                      fatihgans = fs.readFileSync('./lib/style.jpg')
+                      fatihgans = global.thumb
                       let txt = `「 Broadcast Bot 」\n\n${text}`
                       style.send5ButImg(yoi, txt, style.user.name, fatihgans, btn)
 		}
@@ -2772,7 +2772,7 @@ ${cpus.map((cpu, i) => `${i + 1}. ${cpu.model.trim()} (${cpu.speed} MHZ)\n${Obje
 │⭔ ${prefix}setppbot [image]
 │
 └───────⭓`
-                let message = await prepareWAMessageMedia({ image: fs.readFileSync('./lib/style.jpg') }, { upload: style.waUploadToServer })
+                let message = await prepareWAMessageMedia({ image: global.thumb }, { upload: style.waUploadToServer })
                 const template = generateWAMessageFromContent(m.chat, proto.Message.fromObject({
                     templateMessage: {
                         hydratedTemplate: {
