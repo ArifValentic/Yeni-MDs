@@ -5,29 +5,58 @@
 */
 
 require('./config')
-const { default: styleConnect, useSingleFileAuthState, DisconnectReason, fetchLatestBaileysVersion, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, makeInMemoryStore, jidDecode, proto } = require("@adiwajshing/baileys")
+const { default: styleConnect, useSingleFileAuthState, DisconnectReason, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, makeInMemoryStore, jidDecode, proto } = require("@adiwajshing/baileys")
 const { state, saveState } = useSingleFileAuthState(`./${sessionName}.json`)
 const pino = require('pino')
 const fs = require('fs')
 const chalk = require('chalk')
 const FileType = require('file-type')
 const path = require('path')
+const yargs = require('yargs')
 const PhoneNumber = require('awesome-phonenumber')
 const { imageToWebp, videoToWebp, writeExifImg, writeExifVid } = require('./lib/exif')
 const { smsg, isUrl, generateMessageTag, getBuffer, getSizeMedia, fetchJson, await, sleep } = require('./lib/myfunc')
+var low
+try {
+  low = require('lowdb')
+} catch (e) {
+  low = require('./lib/lowdb')
+}
+const { Low, JSONFile } = low
 
 global.api = (name, path = '/', query = {}, apikeyqueryname) => (name in global.APIs ? global.APIs[name] : name) + path + (query || apikeyqueryname ? '?' + new URLSearchParams(Object.entries({ ...query, ...(apikeyqueryname ? { [apikeyqueryname]: global.APIKeys[name in global.APIs ? global.APIs[name] : name] } : {}) })) : '')
+global.opts = new Object(yargs(process.argv.slice(2)).exitProcess(false).parse())
+global.db = new Low(new JSONFile(`${opts._[0] ? opts._[0] + '_' : ''}database.json`))
 
+global.db.data = {
+    users: {},
+    chats: {},
+    database: {},
+    game: {},
+    settings: {},
+    others: {},
+    ...(global.db.data || {})
+}
 const store = makeInMemoryStore({ logger: pino().child({ level: 'silent', stream: 'store' }) })
 
+const getVersionWaweb = () => {
+    let version
+    try {
+        let a = fetchJson('https://web.whatsapp.com/check-update?version=1&platform=web')
+        version = [a.currentVersion.replace(/[.]/g, ', ')]
+    } catch {
+        version = [2, 2204, 13]
+    }
+    return version
+}
+
 async function startstyle() {
-    let { version, isLatest } = await fetchLatestBaileysVersion()
     const style = styleConnect({
         logger: pino({ level: 'silent' }),
         printQRInTerminal: true,
         browser: ['style Multi Device','Safari','1.0.0'],
         auth: state,
-        version
+        version: getVersionWaweb() || [2, 2204, 13]
     })
 
     store.bind(style.ev)
@@ -41,6 +70,7 @@ async function startstyle() {
     await style.updateBlockStatus(callerId, "block")
     }
     })
+
 
     style.ev.on('messages.upsert', async chatUpdate => {
         //console.log(JSON.stringify(chatUpdate, undefined, 2))
