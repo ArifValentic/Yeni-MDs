@@ -758,75 +758,7 @@ During ${clockString(new Date - user.afkTime)}
                 m.reply(`${m.pushName} Telah Afk${text ? ': ' + text : ''}`)
             }
             break	
-          /*case 'absen':
-global.db.data.absen = global.db.data.absen || {} 
-if (!(from in global.db.data.absen)) return m.reply (`Tidak ada absen berlangsung!`) 
-let absen = global.db.data.absen[from][1] 
-const wasVote = absen.includes(m.sender) 
-if (wasVote)return m.reply('Kamu sudah absen!')
-absen.push(m.sender) 
-let d = new Date 
-let date = d.toLocaleDateString('id', { 
-  day: 'numeric', 
-  month: 'long', 
-  year: 'numeric' 
-}) 
-let list = absen.map((v, i) => `│ ${i + 1}. @${v.split`@`[0]}`).join('\n') 
-let caption = `Tanggal: ${date}
-
-${global.db.data.absen[from][2] ? global.db.data.absen[from][2] + '\n' : ''}
-╭─「 Daftar Absen 」
-│ Total: ${absen.length}
-${list}
-╰────`.trim()
-await m.reply(caption)
-//style.sendMessage(from,{text : caption},{quoted:msg})
-break
-
-
-case 'cekabsen':
-global.db.data.absen = global.db.data.absen || {}
-if (!(from in global.db.data.absen))return m.reply(`Tidak ada absen berlangsung!`)
-let dd = new Date 
-let datee = dd.toLocaleDateString('id', { 
-  day: 'numeric', 
-  month: 'long', 
-  year: 'numeric' 
-}) 
-let absenn = global.db.data.absen[from][1] 
-let listt = absenn.map((v, i) => `│ ${i + 1}. @${v.split`@`[0]}`).join('\n') 
-let captionn = `Tanggal: ${datee}
-${global.db.data.absen[from][2] ? global.db.data.absen[from][2] + '\n' : ''}
-╭─「 Daftar Absen 」
-│ Total: ${absenn.length}
-${listt}
-╰────`.trim() 
-m.reply(captionn)
-break
-
-case 'deleteabsen':
-if (!m.isGroup) { 
-  if (!(m.isGroup || isCreator))return m.reply('Only Admin')
-  } 
-  global.db.data.absen = global.db.data.absen || {}
-  if (!(from in global.db.data.absen))return m.reply(`Tidak ada absen berlangsung!`)
-  delete global.db.data.absen[from]
-m.reply(`Absen berhasil dihapus`)
-break
-
-
-case 'absenstart':
-if (!q)return m.reply('Absennya apa?')
-if (!m.isGroup) { 
-  if (!(m.isGroup || isCreator))return m.reply('Only Admin')
-} 
-global.db.data.absen = global.db.data.absen || {}
-if (from in global.db.data.absen)return m.reply(`Masih ada absen di chat ini!`)
-global.db.data.absen[from] = [
-  await style.sendMessage(from,{text:'Absen Di Mulai..'},{ quoted: m }),
-  [], 
-  q ]
-break*/            
+                    
         case 'ttc': case 'ttt': case 'tictactoe': {
             let TicTacToe = require("./lib/tictactoe")
             this.game = this.game ? this.game : {}
