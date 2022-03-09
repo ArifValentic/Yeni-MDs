@@ -5,7 +5,7 @@
 */
 
 require('./config')
-const { default: hisokaConnect, useSingleFileAuthState, DisconnectReason, fetchLatestBaileysVersion, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, makeInMemoryStore, jidDecode, proto } = require("@adiwajshing/baileys")
+const { default: styleConnect, useSingleFileAuthState, DisconnectReason, fetchLatestBaileysVersion, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, makeInMemoryStore, jidDecode, proto } = require("@adiwajshing/baileys")
 const { state, saveState } = useSingleFileAuthState(`./${sessionName}.json`)
 const pino = require('pino')
 const fs = require('fs')
@@ -20,68 +20,68 @@ global.api = (name, path = '/', query = {}, apikeyqueryname) => (name in global.
 
 const store = makeInMemoryStore({ logger: pino().child({ level: 'silent', stream: 'store' }) })
 
-async function startHisoka() {
+async function startstyle() {
     let { version, isLatest } = await fetchLatestBaileysVersion()
-    const hisoka = hisokaConnect({
+    const style = styleConnect({
         logger: pino({ level: 'silent' }),
         printQRInTerminal: true,
-        browser: ['Hisoka Multi Device','Safari','1.0.0'],
+        browser: ['style Multi Device','Safari','1.0.0'],
         auth: state,
         version
     })
 
-    store.bind(hisoka.ev)
+    store.bind(style.ev)
 
-    hisoka.ws.on('CB:call', async (json) => {
+    style.ws.on('CB:call', async (json) => {
     const callerId = json.content[0].attrs['call-creator']
     if (json.content[0].tag == 'offer') {
-    let pa7rick = await hisoka.sendContact(callerId, global.owner)
-    hisoka.sendMessage(callerId, { text: `Sistem otomatis block!\nJangan menelpon bot!\nSilahkan Hubungi Owner Untuk Dibuka !`}, { quoted : pa7rick })
+    let pa7rick = await style.sendContact(callerId, global.owner)
+    style.sendMessage(callerId, { text: `Sistem otomatis block!\nJangan menelpon bot!\nSilahkan Hubungi Owner Untuk Dibuka !`}, { quoted : pa7rick })
     await sleep(8000)
-    await hisoka.updateBlockStatus(callerId, "block")
+    await style.updateBlockStatus(callerId, "block")
     }
     })
 
-    hisoka.ev.on('messages.upsert', async chatUpdate => {
+    style.ev.on('messages.upsert', async chatUpdate => {
         //console.log(JSON.stringify(chatUpdate, undefined, 2))
         try {
         mek = chatUpdate.messages[0]
         if (!mek.message) return
         mek.message = (Object.keys(mek.message)[0] === 'ephemeralMessage') ? mek.message.ephemeralMessage.message : mek.message
         if (mek.key && mek.key.remoteJid === 'status@broadcast') return
-        if (!hisoka.public && !mek.key.fromMe && chatUpdate.type === 'notify') return
+        if (!style.public && !mek.key.fromMe && chatUpdate.type === 'notify') return
         if (mek.key.id.startsWith('BAE5') && mek.key.id.length === 16) return
-        m = smsg(hisoka, mek, store)
-        require("./hisoka")(hisoka, m, chatUpdate, store)
+        m = smsg(style, mek, store)
+        require("./style")(style, m, chatUpdate, store)
         } catch (err) {
             console.log(err)
         }
     })
 
-    hisoka.ev.on('group-participants.update', async (anu) => {
+    style.ev.on('group-participants.update', async (anu) => {
         console.log(anu)
         try {
-            let metadata = await hisoka.groupMetadata(anu.id)
+            let metadata = await style.groupMetadata(anu.id)
             let participants = anu.participants
             for (let num of participants) {
                 // Get Profile Picture User
                 try {
-                    ppuser = await hisoka.profilePictureUrl(num, 'image')
+                    ppuser = await style.profilePictureUrl(num, 'image')
                 } catch {
                     ppuser = 'https://i0.wp.com/www.gambarunik.id/wp-content/uploads/2019/06/Top-Gambar-Foto-Profil-Kosong-Lucu-Tergokil-.jpg'
                 }
 
                 // Get Profile Picture Group
                 try {
-                    ppgroup = await hisoka.profilePictureUrl(anu.id, 'image')
+                    ppgroup = await style.profilePictureUrl(anu.id, 'image')
                 } catch {
                     ppgroup = 'https://i0.wp.com/www.gambarunik.id/wp-content/uploads/2019/06/Top-Gambar-Foto-Profil-Kosong-Lucu-Tergokil-.jpg'
                 }
 
                 if (anu.action == 'add') {
-                    hisoka.sendMessage(anu.id, { image: { url: ppuser }, contextInfo: { mentionedJid: [num] }, caption: `Welcome To ${metadata.subject} @${num.split("@")[0]}` })
+                    style.sendMessage(anu.id, { image: { url: ppuser }, contextInfo: { mentionedJid: [num] }, caption: `Welcome To ${metadata.subject} @${num.split("@")[0]}` })
                 } else if (anu.action == 'remove') {
-                    hisoka.sendMessage(anu.id, { image: { url: ppuser }, contextInfo: { mentionedJid: [num] }, caption: `@${num.split("@")[0]} Leaving To ${metadata.subject}` })
+                    style.sendMessage(anu.id, { image: { url: ppuser }, contextInfo: { mentionedJid: [num] }, caption: `@${num.split("@")[0]} Leaving To ${metadata.subject}` })
                 }
             }
         } catch (err) {
@@ -90,7 +90,7 @@ async function startHisoka() {
     })
 	
     // Setting
-    hisoka.decodeJid = (jid) => {
+    style.decodeJid = (jid) => {
         if (!jid) return jid
         if (/:\d+@/gi.test(jid)) {
             let decode = jidDecode(jid) || {}
@@ -98,44 +98,44 @@ async function startHisoka() {
         } else return jid
     }
     
-    hisoka.ev.on('contacts.update', update => {
+    style.ev.on('contacts.update', update => {
         for (let contact of update) {
-            let id = hisoka.decodeJid(contact.id)
+            let id = style.decodeJid(contact.id)
             if (store && store.contacts) store.contacts[id] = { id, name: contact.notify }
         }
     })
 
-    hisoka.getName = (jid, withoutContact  = false) => {
-        id = hisoka.decodeJid(jid)
-        withoutContact = hisoka.withoutContact || withoutContact 
+    style.getName = (jid, withoutContact  = false) => {
+        id = style.decodeJid(jid)
+        withoutContact = style.withoutContact || withoutContact 
         let v
         if (id.endsWith("@g.us")) return new Promise(async (resolve) => {
             v = store.contacts[id] || {}
-            if (!(v.name || v.subject)) v = hisoka.groupMetadata(id) || {}
+            if (!(v.name || v.subject)) v = style.groupMetadata(id) || {}
             resolve(v.name || v.subject || PhoneNumber('+' + id.replace('@s.whatsapp.net', '')).getNumber('international'))
         })
         else v = id === '0@s.whatsapp.net' ? {
             id,
             name: 'WhatsApp'
-        } : id === hisoka.decodeJid(hisoka.user.id) ?
-            hisoka.user :
+        } : id === style.decodeJid(style.user.id) ?
+            style.user :
             (store.contacts[id] || {})
             return (withoutContact ? '' : v.name) || v.subject || v.verifiedName || PhoneNumber('+' + jid.replace('@s.whatsapp.net', '')).getNumber('international')
     }
     
-    hisoka.sendContact = async (jid, kon, quoted = '', opts = {}) => {
+    style.sendContact = async (jid, kon, quoted = '', opts = {}) => {
 	let list = []
 	for (let i of kon) {
 	    list.push({
-	    	displayName: await hisoka.getName(i + '@s.whatsapp.net'),
-	    	vcard: `BEGIN:VCARD\nVERSION:3.0\nN:${await hisoka.getName(i + '@s.whatsapp.net')}\nFN:${await hisoka.getName(i + '@s.whatsapp.net')}\nitem1.TEL;waid=${i}:${i}\nitem1.X-ABLabel:Ponsel\nitem2.EMAIL;type=INTERNET:okeae2410@gmail.com\nitem2.X-ABLabel:Email\nitem3.URL:https://instagram.com/cak_haho\nitem3.X-ABLabel:Instagram\nitem4.ADR:;;Indonesia;;;;\nitem4.X-ABLabel:Region\nEND:VCARD`
+	    	displayName: await style.getName(i + '@s.whatsapp.net'),
+	    	vcard: `BEGIN:VCARD\nVERSION:3.0\nN:${await style.getName(i + '@s.whatsapp.net')}\nFN:${await style.getName(i + '@s.whatsapp.net')}\nitem1.TEL;waid=${i}:${i}\nitem1.X-ABLabel:Ponsel\nitem2.EMAIL;type=INTERNET:okeae2410@gmail.com\nitem2.X-ABLabel:Email\nitem3.URL:https://instagram.com/cak_haho\nitem3.X-ABLabel:Instagram\nitem4.ADR:;;Indonesia;;;;\nitem4.X-ABLabel:Region\nEND:VCARD`
 	    })
 	}
-	hisoka.sendMessage(jid, { contacts: { displayName: `${list.length} Kontak`, contacts: list }, ...opts }, { quoted })
+	style.sendMessage(jid, { contacts: { displayName: `${list.length} Kontak`, contacts: list }, ...opts }, { quoted })
     }
     
-    hisoka.setStatus = (status) => {
-        hisoka.query({
+    style.setStatus = (status) => {
+        style.query({
             tag: 'iq',
             attrs: {
                 to: '@s.whatsapp.net',
@@ -151,27 +151,27 @@ async function startHisoka() {
         return status
     }
 	
-    hisoka.public = true
+    style.public = true
 
-    hisoka.serializeM = (m) => smsg(hisoka, m, store)
+    style.serializeM = (m) => smsg(style, m, store)
 
-    hisoka.ev.on('connection.update', async (update) => {
+    style.ev.on('connection.update', async (update) => {
         const { connection, lastDisconnect } = update	    
         if (connection === 'close') {
         let reason = lastDisconnect.error ? lastDisconnect?.error?.output.statusCode : 0;
             if (reason === DisconnectReason.badSession) { console.log(`Bad Session File, Please Delete Session and Scan Again`); process.exit(); }
-            else if (reason === DisconnectReason.connectionClosed) { console.log("Connection closed, reconnecting...."); startHisoka(); }
-            else if (reason === DisconnectReason.connectionLost) { console.log("Connection Lost from Server, reconnecting..."); startHisoka(); }
+            else if (reason === DisconnectReason.connectionClosed) { console.log("Connection closed, reconnecting...."); startstyle(); }
+            else if (reason === DisconnectReason.connectionLost) { console.log("Connection Lost from Server, reconnecting..."); startstyle(); }
             else if (reason === DisconnectReason.connectionReplaced) { console.log("Connection Replaced, Another New Session Opened, Please Close Current Session First"); process.exit(); }
             else if (reason === DisconnectReason.loggedOut) { console.log(`Device Logged Out, Please Delete Session and Scan Again.`); process.exit(); }
-            else if (reason === DisconnectReason.restartRequired) { console.log("Restart Required, Restarting..."); startHisoka(); }
-            else if (reason === DisconnectReason.timedOut) { console.log("Connection TimedOut, Reconnecting..."); startHisoka(); }
+            else if (reason === DisconnectReason.restartRequired) { console.log("Restart Required, Restarting..."); startstyle(); }
+            else if (reason === DisconnectReason.timedOut) { console.log("Connection TimedOut, Reconnecting..."); startstyle(); }
             else { console.log(`Unknown DisconnectReason: ${reason}|${connection}`) }
         }
         console.log('Connected...', update)
     })
 
-    hisoka.ev.on('creds.update', saveState)
+    style.ev.on('creds.update', saveState)
 
     // Add Other
     /** Send Button 5 Image
@@ -184,8 +184,8 @@ async function startHisoka() {
      * @param {*} options
      * @returns
      */
-    hisoka.send5ButImg = async (jid , text = '' , footer = '', img, but = [], options = {}) =>{
-        let message = await prepareWAMessageMedia({ image: img }, { upload: hisoka.waUploadToServer })
+    style.send5ButImg = async (jid , text = '' , footer = '', img, but = [], options = {}) =>{
+        let message = await prepareWAMessageMedia({ image: img }, { upload: style.waUploadToServer })
         var template = generateWAMessageFromContent(m.chat, proto.Message.fromObject({
         templateMessage: {
         hydratedTemplate: {
@@ -196,7 +196,7 @@ async function startHisoka() {
             }
             }
             }), options)
-            hisoka.relayMessage(jid, template.message, { messageId: template.key.id })
+            style.relayMessage(jid, template.message, { messageId: template.key.id })
     }
 
     /**
@@ -208,7 +208,7 @@ async function startHisoka() {
      * @param {*} quoted 
      * @param {*} options 
      */
-    hisoka.sendButtonText = (jid, buttons = [], text, footer, quoted = '', options = {}) => {
+    style.sendButtonText = (jid, buttons = [], text, footer, quoted = '', options = {}) => {
         let buttonMessage = {
             text,
             footer,
@@ -216,7 +216,7 @@ async function startHisoka() {
             headerType: 2,
             ...options
         }
-        hisoka.sendMessage(jid, buttonMessage, { quoted, ...options })
+        style.sendMessage(jid, buttonMessage, { quoted, ...options })
     }
     
     /**
@@ -227,7 +227,7 @@ async function startHisoka() {
      * @param {*} options 
      * @returns 
      */
-    hisoka.sendText = (jid, text, quoted = '', options) => hisoka.sendMessage(jid, { text: text, ...options }, { quoted })
+    style.sendText = (jid, text, quoted = '', options) => style.sendMessage(jid, { text: text, ...options }, { quoted })
 
     /**
      * 
@@ -238,9 +238,9 @@ async function startHisoka() {
      * @param {*} options 
      * @returns 
      */
-    hisoka.sendImage = async (jid, path, caption = '', quoted = '', options) => {
+    style.sendImage = async (jid, path, caption = '', quoted = '', options) => {
 	let buffer = Buffer.isBuffer(path) ? path : /^data:.*?\/.*?;base64,/i.test(path) ? Buffer.from(path.split`,`[1], 'base64') : /^https?:\/\//.test(path) ? await (await getBuffer(path)) : fs.existsSync(path) ? fs.readFileSync(path) : Buffer.alloc(0)
-        return await hisoka.sendMessage(jid, { image: buffer, caption: caption, ...options }, { quoted })
+        return await style.sendMessage(jid, { image: buffer, caption: caption, ...options }, { quoted })
     }
 
     /**
@@ -252,9 +252,9 @@ async function startHisoka() {
      * @param {*} options 
      * @returns 
      */
-    hisoka.sendVideo = async (jid, path, caption = '', quoted = '', gif = false, options) => {
+    style.sendVideo = async (jid, path, caption = '', quoted = '', gif = false, options) => {
         let buffer = Buffer.isBuffer(path) ? path : /^data:.*?\/.*?;base64,/i.test(path) ? Buffer.from(path.split`,`[1], 'base64') : /^https?:\/\//.test(path) ? await (await getBuffer(path)) : fs.existsSync(path) ? fs.readFileSync(path) : Buffer.alloc(0)
-        return await hisoka.sendMessage(jid, { video: buffer, caption: caption, gifPlayback: gif, ...options }, { quoted })
+        return await style.sendMessage(jid, { video: buffer, caption: caption, gifPlayback: gif, ...options }, { quoted })
     }
 
     /**
@@ -266,9 +266,9 @@ async function startHisoka() {
      * @param {*} options 
      * @returns 
      */
-    hisoka.sendAudio = async (jid, path, quoted = '', ptt = false, options) => {
+    style.sendAudio = async (jid, path, quoted = '', ptt = false, options) => {
         let buffer = Buffer.isBuffer(path) ? path : /^data:.*?\/.*?;base64,/i.test(path) ? Buffer.from(path.split`,`[1], 'base64') : /^https?:\/\//.test(path) ? await (await getBuffer(path)) : fs.existsSync(path) ? fs.readFileSync(path) : Buffer.alloc(0)
-        return await hisoka.sendMessage(jid, { audio: buffer, ptt: ptt, ...options }, { quoted })
+        return await style.sendMessage(jid, { audio: buffer, ptt: ptt, ...options }, { quoted })
     }
 
     /**
@@ -279,7 +279,7 @@ async function startHisoka() {
      * @param {*} options 
      * @returns 
      */
-    hisoka.sendTextWithMentions = async (jid, text, quoted, options = {}) => hisoka.sendMessage(jid, { text: text, contextInfo: { mentionedJid: [...text.matchAll(/@(\d{0,16})/g)].map(v => v[1] + '@s.whatsapp.net') }, ...options }, { quoted })
+    style.sendTextWithMentions = async (jid, text, quoted, options = {}) => style.sendMessage(jid, { text: text, contextInfo: { mentionedJid: [...text.matchAll(/@(\d{0,16})/g)].map(v => v[1] + '@s.whatsapp.net') }, ...options }, { quoted })
 
    /** Send Button 5 Image
      *
@@ -345,7 +345,7 @@ const sendFileFromUrl = async (from, url, caption, m, men) => {
      * @param {*} options 
      * @returns 
      */
-    hisoka.sendImageAsSticker = async (jid, path, quoted, options = {}) => {
+    style.sendImageAsSticker = async (jid, path, quoted, options = {}) => {
         let buff = Buffer.isBuffer(path) ? path : /^data:.*?\/.*?;base64,/i.test(path) ? Buffer.from(path.split`,`[1], 'base64') : /^https?:\/\//.test(path) ? await (await getBuffer(path)) : fs.existsSync(path) ? fs.readFileSync(path) : Buffer.alloc(0)
         let buffer
         if (options && (options.packname || options.author)) {
@@ -354,7 +354,7 @@ const sendFileFromUrl = async (from, url, caption, m, men) => {
             buffer = await imageToWebp(buff)
         }
 
-        await hisoka.sendMessage(jid, { sticker: { url: buffer }, ...options }, { quoted })
+        await style.sendMessage(jid, { sticker: { url: buffer }, ...options }, { quoted })
         return buffer
     }
 
@@ -366,7 +366,7 @@ const sendFileFromUrl = async (from, url, caption, m, men) => {
      * @param {*} options 
      * @returns 
      */
-    hisoka.sendVideoAsSticker = async (jid, path, quoted, options = {}) => {
+    style.sendVideoAsSticker = async (jid, path, quoted, options = {}) => {
         let buff = Buffer.isBuffer(path) ? path : /^data:.*?\/.*?;base64,/i.test(path) ? Buffer.from(path.split`,`[1], 'base64') : /^https?:\/\//.test(path) ? await (await getBuffer(path)) : fs.existsSync(path) ? fs.readFileSync(path) : Buffer.alloc(0)
         let buffer
         if (options && (options.packname || options.author)) {
@@ -375,7 +375,7 @@ const sendFileFromUrl = async (from, url, caption, m, men) => {
             buffer = await videoToWebp(buff)
         }
 
-        await hisoka.sendMessage(jid, { sticker: { url: buffer }, ...options }, { quoted })
+        await style.sendMessage(jid, { sticker: { url: buffer }, ...options }, { quoted })
         return buffer
     }
 	
@@ -386,7 +386,7 @@ const sendFileFromUrl = async (from, url, caption, m, men) => {
      * @param {*} attachExtension 
      * @returns 
      */
-    hisoka.downloadAndSaveMediaMessage = async (message, filename, attachExtension = true) => {
+    style.downloadAndSaveMediaMessage = async (message, filename, attachExtension = true) => {
         let quoted = message.msg ? message.msg : message
         let mime = (message.msg || message).mimetype || ''
         let messageType = message.mtype ? message.mtype.replace(/Message/gi, '') : mime.split('/')[0]
@@ -402,7 +402,7 @@ const sendFileFromUrl = async (from, url, caption, m, men) => {
         return trueFileName
     }
 
-    hisoka.downloadMediaMessage = async (message) => {
+    style.downloadMediaMessage = async (message) => {
         let mime = (message.msg || message).mimetype || ''
         let messageType = message.mtype ? message.mtype.replace(/Message/gi, '') : mime.split('/')[0]
         const stream = await downloadContentFromMessage(message, messageType)
@@ -424,8 +424,8 @@ const sendFileFromUrl = async (from, url, caption, m, men) => {
      * @param {*} options 
      * @returns 
      */
-    hisoka.sendMedia = async (jid, path, fileName = '', caption = '', quoted = '', options = {}) => {
-        let types = await hisoka.getFile(path, true)
+    style.sendMedia = async (jid, path, fileName = '', caption = '', quoted = '', options = {}) => {
+        let types = await style.getFile(path, true)
            let { mime, ext, res, data, filename } = types
            if (res && res.status !== 200 || file.length <= 65536) {
                try { throw { json: JSON.parse(file.toString()) } }
@@ -445,7 +445,7 @@ const sendFileFromUrl = async (from, url, caption, m, men) => {
        else if (/video/.test(mime)) type = 'video'
        else if (/audio/.test(mime)) type = 'audio'
        else type = 'document'
-       await hisoka.sendMessage(jid, { [type]: { url: pathFile }, caption, mimetype, fileName, ...options }, { quoted, ...options })
+       await style.sendMessage(jid, { [type]: { url: pathFile }, caption, mimetype, fileName, ...options }, { quoted, ...options })
        return fs.promises.unlink(pathFile)
        }
 
@@ -457,7 +457,7 @@ const sendFileFromUrl = async (from, url, caption, m, men) => {
      * @param {*} options 
      * @returns 
      */
-    hisoka.copyNForward = async (jid, message, forceForward = false, options = {}) => {
+    style.copyNForward = async (jid, message, forceForward = false, options = {}) => {
         let vtype
 		if (options.readViewOnce) {
 			message.message = message.message && message.message.ephemeralMessage && message.message.ephemeralMessage.message ? message.message.ephemeralMessage.message : (message.message || undefined)
@@ -488,11 +488,11 @@ const sendFileFromUrl = async (from, url, caption, m, men) => {
                 }
             } : {})
         } : {})
-        await hisoka.relayMessage(jid, waMessage.message, { messageId:  waMessage.key.id })
+        await style.relayMessage(jid, waMessage.message, { messageId:  waMessage.key.id })
         return waMessage
     }
 
-    hisoka.cMod = (jid, copy, text = '', sender = hisoka.user.id, options = {}) => {
+    style.cMod = (jid, copy, text = '', sender = style.user.id, options = {}) => {
         //let copy = message.toJSON()
 		let mtype = Object.keys(copy.message)[0]
 		let isEphemeral = mtype === 'ephemeralMessage'
@@ -513,7 +513,7 @@ const sendFileFromUrl = async (from, url, caption, m, men) => {
 		if (copy.key.remoteJid.includes('@s.whatsapp.net')) sender = sender || copy.key.remoteJid
 		else if (copy.key.remoteJid.includes('@broadcast')) sender = sender || copy.key.remoteJid
 		copy.key.remoteJid = jid
-		copy.key.fromMe = sender === hisoka.user.id
+		copy.key.fromMe = sender === style.user.id
 
         return proto.WebMessageInfo.fromObject(copy)
     }
@@ -524,7 +524,7 @@ const sendFileFromUrl = async (from, url, caption, m, men) => {
      * @param {*} path 
      * @returns 
      */
-    hisoka.getFile = async (PATH, save) => {
+    style.getFile = async (PATH, save) => {
         let res
         let data = Buffer.isBuffer(PATH) ? PATH : /^data:.*?\/.*?;base64,/i.test(PATH) ? Buffer.from(PATH.split`,`[1], 'base64') : /^https?:\/\//.test(PATH) ? await (res = await getBuffer(PATH)) : fs.existsSync(PATH) ? (filename = PATH, fs.readFileSync(PATH)) : typeof PATH === 'string' ? PATH : Buffer.alloc(0)
         //if (!Buffer.isBuffer(data)) throw new TypeError('Result is not a buffer')
@@ -544,10 +544,10 @@ const sendFileFromUrl = async (from, url, caption, m, men) => {
 
     }
 
-    return hisoka
+    return style
 }
 
-startHisoka()
+startstyle()
 
 
 let file = require.resolve(__filename)
