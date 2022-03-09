@@ -72,27 +72,60 @@ module.exports = style = async (style, m, chatUpdate, store) => {
         const groupOwner = m.isGroup ? groupMetadata.owner : ''
     	const isBotAdmins = m.isGroup ? groupAdmins.includes(botNumber) : false
     	const isAdmins = m.isGroup ? groupAdmins.includes(m.sender) : false
-	const isPremium = isCreator || global.premium.map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender) || false
+	/*const isPremium = isCreator || global.premium.map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender) || false*/
 	
 	
-	try {
-            let isNumber = x => typeof x === 'number' && !isNaN(x)
-            let limitUser = isPremium ? global.limitawal.premium : global.limitawal.free
-            let user = global.db.data.users[m.sender]
-            if (typeof user !== 'object') global.db.data.users[m.sender] = {}
-            if (user) {
-                if (!isNumber(user.afkTime)) user.afkTime = -1
-                if (!('afkReason' in user)) user.afkReason = ''
-                if (!isNumber(user.limit)) user.limit = limitUser
-            } else global.db.data.users[m.sender] = {
-                afkTime: -1,
-                afkReason: '',
-                limit: limitUser,
+	         // Database
+        try {
+	    let users = global.db.data.users[m.sender]
+	    if (typeof users !== 'object') global.db.data.users[m.sender] = {}
+	    if (users) {
+		if (!isNumber(users.afkTime)) users.afkTime = -1
+		if (!('banned' in users)) users.banned = false
+		if (!('afkReason' in users)) users.afkReason = ''
+	    } else global.db.data.users[m.sender] = {
+		afkTime: -1,
+	    banned: false,
+		afkReason: '',
+	    }
+	     
+	    let chats = global.db.data.chats[m.chat]
+	    if (typeof chats !== 'object') global.db.data.chats[m.chat] = {}
+	    if (chats) {
+		if (!('antionce' in chats)) chats.antionce = true
+        if (!('mute' in chats)) chats.mute = false
+        if (!('antispam' in chats)) chats.antispam = true
+		if (!('antidelete' in chats)) chats.antidelete = false
+        if (!('setDemote' in chat)) chat.setDemote = ''
+	    if (!('setPromote' in chat)) chat.setPromote = ''
+	    if (!('setWelcome' in chat)) chat.setWelcome = ''
+	    if (!('setLeave' in chat)) chat.setLeave = ''
+	    } else global.db.data.chats[m.chat] = {
+		antionce: true,
+		mute: false,
+		antispam: true,
+		antidelete: false,
+		setDemote: '',
+        setPromote: '',
+        setWelcome: '',
+        setLeave: '',
+	    }
+	    
+            let settings = global.db.data.settings[botNumber]
+            if (typeof settings !== 'object') global.db.data.settings[botNumber] = {}
+            if (settings) {
+            if (!('available' in settings)) settings.available = false
+            if (!('composing' in settings)) settings.composing = false
+            if (!('recording' in settings)) settings.recording = false
+            } else global.db.data.settings[botNumber] = {
+                available: false,
+                composing: false,
+                recording: false,
             }
         } catch (err) {
-            console.error(err)
+            console.log(err)
         }
-	    
+	
         // Public & Self
         if (!style.public) {
             if (!m.key.fromMe) return
@@ -102,14 +135,14 @@ module.exports = style = async (style, m, chatUpdate, store) => {
         if (m.message) {
             style.sendReadReceipt(m.chat, m.sender, [m.key.id])
             console.log(chalk.black(chalk.bgWhite('[ PESAN ]')), chalk.black(chalk.bgGreen(new Date)), chalk.black(chalk.bgBlue(budy || m.mtype)) + '\n' + chalk.magenta('=> Dari'), chalk.green(pushname), chalk.yellow(m.sender) + '\n' + chalk.blueBright('=> Di'), chalk.green(m.isGroup ? pushname : 'Private Chat', m.chat))
-        }
-	
+        }	
+
 	// write database every 1 minute
 	setInterval(() => {
             fs.writeFileSync('./src/database.json', JSON.stringify(global.db, null, 2))
         }, 60 * 1000)
 
-	// reset limit every 12 hours
+	/*reset limit every 12 hours
         let cron = require('node-cron')
         cron.schedule('00 12 * * *', () => {
             let user = Object.keys(global.db.data.users)
@@ -119,7 +152,7 @@ module.exports = style = async (style, m, chatUpdate, store) => {
         }, {
             scheduled: true,
             timezone: "Asia/Jakarta"
-        })
+        })*/
 	    
         // Respon Cmd with media
         if (isMedia && m.msg.fileSha256 && (m.msg.fileSha256.toString('base64') in global.db.sticker)) {
@@ -791,18 +824,22 @@ let teks = `══✪〘 *👥 Tag All* 〙✪══
             }
             break
 	    case 'style': case 'styletext': {
-	        if (!isPremium && global.db.data.users[m.sender].limit < 1) return m.reply(mess.endLimit) // respon ketika limit habis
-		db.data.users[m.sender].limit -= 1 // -1 limit
-		let { styletext } = require('./lib/scraper')
-		if (!text) throw 'Masukkan Query text!'
-                let anu = await styletext(text)
-                let teks = `Srtle Text From ${text}\n\n`
-                for (let i of anu) {
-                    teks += `⭔ *${i.name}* : ${i.result}\n\n`
-                }
-                m.reply(teks)
-	    }
-	    break
+async function stylizeText(text) {
+    let res = await fetch('http://qaz.wtf/u/convert.cgi?text=' + encodeURIComponent(text))
+    let html = await res.text()
+    let dom = new JSDOM(html)
+    let table = dom.window.document.querySelector('table').children[0].children
+    let obj = {}
+    for (let tr of table) {
+      let name = tr.querySelector('.aname').innerHTML
+      let content = tr.children[1].textContent.replace(/^\n/, '').replace(/\n$/, '')
+      obj[name + (obj[name] ? ' Reversed' : '')] = content
+    }
+    return obj
+}
+m.reply(Object.entries(await stylizeText(text ? text : m.quoted && m.quoted.text ? m.quoted.text : m.text)).map(([name, value]) => `*${name}*\n${value}`).join`\n\n`)
+}
+break
                case 'vote': {
             if (!m.isGroup) throw mess.group
             if (m.chat in vote) throw `_Masih ada vote di chat ini!_\n\n*${prefix}hapusvote* - untuk menghapus vote`
