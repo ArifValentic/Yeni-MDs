@@ -24,25 +24,26 @@ const primbon = new Primbon()
 const { smsg, formatp, tanggal, formatDate, getTime, isUrl, sleep, clockString, runtime, fetchJson, getBuffer, jsonformat, format, parseMention, getRandom } = require('./lib/myfunc')
 
 // read database
-/*global.db = JSON.parse(fs.readFileSync('./src/database.json'))
+global.db = JSON.parse(fs.readFileSync('./src/database.json'))
 if (global.db) global.db = {
     sticker: {},
     database: {},
     game: {},
     others: {},
+    users: {},
     ...(global.db || {})
-}*/
-let tebaklagu = db.data.game.tebaklagu = []
-let _family100 = db.data.game.family100 = []
-let kuismath = db.data.game.math = []
-let tebakgambar = db.data.game.tebakgambar = []
-let tebakkata = db.data.game.tebakkata = []
-let caklontong = db.data.game.lontong = []
-let caklontong_desk = db.data.game.lontong_desk = []
-let tebakkalimat = db.data.game.kalimat = []
-let tebaklirik = db.data.game.lirik = []
-let tebaktebakan = db.data.game.tebakan = []
-let vote = db.data.others.vote = []
+}
+let tebaklagu = db.game.tebaklagu = []
+let _family100 = db.game.family100 = []
+let kuismath = db.game.math = []
+let tebakgambar = db.game.tebakgambar = []
+let tebakkata = db.game.tebakkata = []
+let caklontong = db.game.lontong = []
+let caklontong_desk = db.game.lontong_desk = []
+let tebakkalimat = db.game.kalimat = []
+let tebaklirik = db.game.lirik = []
+let tebaktebakan = db.game.tebakan = []
+let vote = db.others.vote = []
 
 module.exports = style = async (style, m, chatUpdate, store) => {
     try {
@@ -50,9 +51,9 @@ module.exports = style = async (style, m, chatUpdate, store) => {
         var budy = (typeof m.text == 'string' ? m.text : '')
         var prefix = prefa ? /^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@#$%^&.©^]/gi.test(body) ? body.match(/^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@#$%^&.©^]/gi)[0] : "" : prefa ?? global.prefix
         const isCmd = body.startsWith(prefix)
-        const from = m.key.remoteJid
         const command = body.replace(prefix, '').trim().split(/ +/).shift().toLowerCase()
         const args = body.trim().split(/ +/).slice(1)
+        const from = m.key.remoteJid
         const pushname = m.pushName || "No Name"
         const botNumber = await style.decodeJid(style.user.id)
         const isCreator = [botNumber, ...global.owner].map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender)
@@ -61,8 +62,7 @@ module.exports = style = async (style, m, chatUpdate, store) => {
         const quoted = m.quoted ? m.quoted : m
         const mime = (quoted.msg || quoted).mimetype || ''
 	    const isMedia = /image|video|sticker|audio/.test(mime)
-	    const mentionUser = [...new Set([...(m.mentionedJid || []), ...(m.quoted ? [m.quoted.sender] : [])])]
-			
+	
         // Group
         const groupMetadata = m.isGroup ? await style.groupMetadata(m.chat).catch(e => {}) : ''
         const groupName = m.isGroup ? groupMetadata.subject : ''
@@ -71,58 +71,27 @@ module.exports = style = async (style, m, chatUpdate, store) => {
         const groupOwner = m.isGroup ? groupMetadata.owner : ''
     	const isBotAdmins = m.isGroup ? groupAdmins.includes(botNumber) : false
     	const isAdmins = m.isGroup ? groupAdmins.includes(m.sender) : false
-
-	         // Database
-        try {
-	    let users = global.db.data.users[m.sender]
-	    if (typeof users !== 'object') global.db.data.users[m.sender] = {}
-	    if (users) {
-		if (!isNumber(users.afkTime)) users.afkTime = -1
-		if (!('banned' in users)) users.banned = false
-		if (!('afkReason' in users)) users.afkReason = ''
-	    } else global.db.data.users[m.sender] = {
-		afkTime: -1,
-	    banned: false,
-		afkReason: '',
-	    }
-	     
-	    let chats = global.db.data.chats[m.chat]
-	    if (typeof chats !== 'object') global.db.data.chats[m.chat] = {}
-	    if (chats) {
-		if (!('antionce' in chats)) chats.antionce = true
-        if (!('mute' in chats)) chats.mute = false
-        if (!('antispam' in chats)) chats.antispam = true
-		if (!('antidelete' in chats)) chats.antidelete = false
-        if (!('setDemote' in chat)) chat.setDemote = ''
-	    if (!('setPromote' in chat)) chat.setPromote = ''
-	    if (!('setWelcome' in chat)) chat.setWelcome = ''
-	    if (!('setLeave' in chat)) chat.setLeave = ''
-	    } else global.db.data.chats[m.chat] = {
-		antionce: true,
-		mute: false,
-		antispam: true,
-		antidelete: false,
-		setDemote: '',
-        setPromote: '',
-        setWelcome: '',
-        setLeave: '',
-	    }
-	    
-            let settings = global.db.data.settings[botNumber]
-            if (typeof settings !== 'object') global.db.data.settings[botNumber] = {}
-            if (settings) {
-            if (!('available' in settings)) settings.available = false
-            if (!('composing' in settings)) settings.composing = false
-            if (!('recording' in settings)) settings.recording = false
-            } else global.db.data.settings[botNumber] = {
-                available: false,
-                composing: false,
-                recording: false,
+	const isPremium = isCreator || global.premium.map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender) || false
+	
+	
+	try {
+            let isNumber = x => typeof x === 'number' && !isNaN(x)
+            let limitUser = isPremium ? global.limitawal.premium : global.limitawal.free
+            let user = global.db.users[m.sender]
+            if (typeof user !== 'object') global.db.users[m.sender] = {}
+            if (user) {
+                if (!isNumber(user.afkTime)) user.afkTime = -1
+                if (!('afkReason' in user)) user.afkReason = ''
+                if (!isNumber(user.limit)) user.limit = limitUser
+            } else global.db.users[m.sender] = {
+                afkTime: -1,
+                afkReason: '',
+                limit: limitUser,
             }
         } catch (err) {
-            console.log(err)
+            console.error(err)
         }
-	
+	    
         // Public & Self
         if (!style.public) {
             if (!m.key.fromMe) return
@@ -132,13 +101,25 @@ module.exports = style = async (style, m, chatUpdate, store) => {
         if (m.message) {
             style.sendReadReceipt(m.chat, m.sender, [m.key.id])
             console.log(chalk.black(chalk.bgWhite('[ PESAN ]')), chalk.black(chalk.bgGreen(new Date)), chalk.black(chalk.bgBlue(budy || m.mtype)) + '\n' + chalk.magenta('=> Dari'), chalk.green(pushname), chalk.yellow(m.sender) + '\n' + chalk.blueBright('=> Di'), chalk.green(m.isGroup ? pushname : 'Private Chat', m.chat))
-        }	
-
+        }
+	
 	// write database every 1 minute
 	setInterval(() => {
             fs.writeFileSync('./src/database.json', JSON.stringify(global.db, null, 2))
         }, 60 * 1000)
 
+	// reset limit every 12 hours
+        let cron = require('node-cron')
+        cron.schedule('00 12 * * *', () => {
+            let user = Object.keys(global.db.users)
+            let limitUser = isPremium ? global.limitawal.premium : global.limitawal.free
+            for (let jid of user) global.db.users[jid].limit = limitUser
+            console.log('Reseted Limit')
+        }, {
+            scheduled: true,
+            timezone: "Asia/Jakarta"
+        })
+	    
         // Respon Cmd with media
         if (isMedia && m.msg.fileSha256 && (m.msg.fileSha256.toString('base64') in global.db.sticker)) {
         let hash = global.db.sticker[m.msg.fileSha256.toString('base64')]
@@ -393,25 +374,25 @@ klik https://wa.me/${botNumber.split`@`[0]}`, m, { mentions: [roof.p, roof.p2] }
 	    }
 	    }
 	    
-	    // Afk
-	for (let jid of mentionUser) {
-            let user = global.db.data.users[jid]
+	    let mentionUser = [...new Set([...(m.mentionedJid || []), ...(m.quoted ? [m.quoted.sender] : [])])]
+	    for (let jid of mentionUser) {
+            let user = global.db.users[jid]
             if (!user) continue
             let afkTime = user.afkTime
             if (!afkTime || afkTime < 0) continue
             let reason = user.afkReason || ''
             m.reply(`
-Dont tag him!
-He in AFK ${reason ? 'with reason ' + reason : 'no reason'}
-During ${clockString(new Date - afkTime)}
+Jangan tag dia!
+Dia sedang AFK ${reason ? 'dengan alasan ' + reason : 'tanpa alasan'}
+Selama ${clockString(new Date - afkTime)}
 `.trim())
         }
-	    
-	if (db.data.users[m.sender].afkTime > -1) {
-            let user = global.db.data.users[m.sender]
+
+        if (db.users[m.sender].afkTime > -1) {
+            let user = global.db.users[m.sender]
             m.reply(`
-You quit AFK${user.afkReason ? ' after ' + user.afkReason : ''}
-During ${clockString(new Date - user.afkTime)}
+Kamu berhenti AFK${user.afkReason ? ' setelah ' + user.afkReason : ''}
+Selama ${clockString(new Date - user.afkTime)}
 `.trim())
             user.afkTime = -1
             user.afkReason = ''
@@ -419,12 +400,12 @@ During ${clockString(new Date - user.afkTime)}
 	    
         switch(command) {
 	    case 'afk': {
-                let user = global.db.data.users[m.sender]
+                let user = global.db.users[m.sender]
                 user.afkTime = + new Date
                 user.afkReason = text
                 m.reply(`${m.pushName} Telah Afk${text ? ': ' + text : ''}`)
             }
-            break		            
+            break	
         case 'ttc': case 'ttt': case 'tictactoe': {
             let TicTacToe = require("./lib/tictactoe")
             this.game = this.game ? this.game : {}
@@ -516,12 +497,8 @@ Silahkan @${m.mentionedJid[0].split`@`[0]} untuk ketik terima/tolak`
             }, 60000), poin, poin_lose, timeout
             }
             }
-            break	    
-            
-            case 'sc': {
-                m.reply('Script : https://github.com/Agus-style')
-            }
             break
+	  
             case 'chat': {
                 if (!isCreator) throw mess.owner
                 if (!q) throw 'Option : 1. mute\n2. unmute\n3. archive\n4. unarchive\n5. read\n6. unread\n7. delete'
@@ -812,23 +789,19 @@ let teks = `══✪〘 *👥 Tag All* 〙✪══
             style.sendMessage(m.chat, { text : q ? q : '' , mentions: participants.map(a => a.id)}, { quoted: m })
             }
             break
-			case 'style': case 'styletext': {
-async function stylizeText(text) {
-    let res = await fetch('http://qaz.wtf/u/convert.cgi?text=' + encodeURIComponent(text))
-    let html = await res.text()
-    let dom = new JSDOM(html)
-    let table = dom.window.document.querySelector('table').children[0].children
-    let obj = {}
-    for (let tr of table) {
-      let name = tr.querySelector('.aname').innerHTML
-      let content = tr.children[1].textContent.replace(/^\n/, '').replace(/\n$/, '')
-      obj[name + (obj[name] ? ' Reversed' : '')] = content
-    }
-    return obj
-}
-m.reply(Object.entries(await stylizeText(text ? text : m.quoted && m.quoted.text ? m.quoted.text : m.text)).map(([name, value]) => `*${name}*\n${value}`).join`\n\n`)
-}
-break
+	    case 'style': case 'styletext': {
+	        if (!isPremium && global.db.users[m.sender].limit < 1) return m.reply(mess.endLimit) // respon ketika limit habis
+		db.users[m.sender].limit -= 1 // -1 limit
+		let { styletext } = require('./lib/scraper')
+		if (!text) throw 'Masukkan Query text!'
+                let anu = await styletext(text)
+                let teks = `Srtle Text From ${text}\n\n`
+                for (let i of anu) {
+                    teks += `⭔ *${i.name}* : ${i.result}\n\n`
+                }
+                m.reply(teks)
+	    }
+	    break
                case 'vote': {
             if (!m.isGroup) throw mess.group
             if (m.chat in vote) throw `_Masih ada vote di chat ini!_\n\n*${prefix}hapusvote* - untuk menghapus vote`
@@ -1087,7 +1060,7 @@ break
                                     id: 'sc'
                                 }
                             }]
-                      fatihgans = global.thumb
+                      fatihgans = fs.readFileSync('./lib/style.jpg')
                       let txt = `「 Broadcast Bot 」\n\n${text}`
                       style.send5ButImg(i, txt, style.user.name, fatihgans, btn)
                     }
@@ -1127,7 +1100,7 @@ break
                                     id: 'sc'
                                 }
                             }]
-                      fatihgans = global.thumb
+                      fatihgans = fs.readFileSync('./lib/style.jpg')
                       let txt = `「 Broadcast Bot 」\n\n${text}`
                       style.send5ButImg(yoi, txt, style.user.name, fatihgans, btn)
 		}
@@ -1922,40 +1895,63 @@ let buttons1 = [
 		   audio = audio.result.audio_only.original
 		   style.sendMessage(m.chat, {document: {url: audio}, mimetype: 'audio/mpeg', fileName: `audio_tiktok.mp3`}, {quoted:m})		   
 		   break
-            /*case'ttdl':
-            case 'tiktok':
-urlny = args[0]
-if(!urlny) throw "url nya mana"
-type = args[1]
-var { TiktokDownloader } = require('./lib/tiktokdl')
-res = await TiktokDownloader(`${urlny}`)
-if (!type) {
-let buttons = [
-                    {buttonId: `tiktoknowm ${urlny} --nowm`, buttonText: {displayText: '► Watermark'}, type: 1},
-                    {buttonId: `tiktokwm ${urlny} --wm`, buttonText: {displayText: '► With Watermark'}, type: 1},
-                    {buttonId: `tiktokmp3 ${urlny} --mp3`, buttonText: {displayText: '♫ Audio'}, type: 1}
+	       /*case 'tiktok': case 'tiktoknowm': {
+                if (!text) throw 'Masukkan Query Link!'
+                m.reply(mess.wait)
+                let anu = await fetchJson(api('zenz', '/downloader/tiktok', { url: text }, 'apikey'))
+                let buttons = [
+                    {buttonId: `tiktokwm ${text}`, buttonText: {displayText: '► With Watermark'}, type: 1},
+                    {buttonId: `tiktokmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
                 ]
                 let buttonMessage = {
-                    text: `pilih salah satu`,
-                    footer: 'DOWNLOAD',
+                    video: { url: anu.result.nowatermark },
+                    caption: `Download From ${text}`,
+                    footer: 'Press The Button Below',
                     buttons: buttons,
-                    headerType: 1                    
+                    headerType: 5
                 }
-                style.sendMessage(m.chat, buttonMessage, { quoted: m })  
-}
-switch(type) {
-case '--mp3':
- audio = await fetchJson(`http://hadi-//api/tiktok?url=${urlny}`)
-style.sendMessage(m.chat, {document: {url: audio.result.audio_only.original}, mimetype: 'audio/mpeg', fileName: `audio_tiktok.mp3`}, {quoted:m})		   
-break
-case '--nowm':
-style.sendMessage(m.chat, {video: {url: res.result.now/atermark}, caption: "Done"}, {quoted: m})
-break
-case '--wm':
-style.sendMessage(m.chat, {video: {url: res.result.watermark}, caption: "Done"}, {quoted: m})
-break
-}
-break*/                     	          		        
+                style.sendMessage(m.chat, buttonMessage, { quoted: m })
+            }
+            break
+            case 'tiktokwm': case 'tiktokwatermark': {
+                if (!text) throw 'Masukkan Query Link!'
+                m.reply(mess.wait)
+                let anu = await fetchJson(api('zenz', '/downloader/tiktok', { url: text }, 'apikey'))
+                let buttons = [
+                    {buttonId: `tiktoknowm ${text}`, buttonText: {displayText: '► No Watermark'}, type: 1},
+                    {buttonId: `tiktokmp3 ${text}`, buttonText: {displayText: '♫ Audio'}, type: 1}
+                ]
+                let buttonMessage = {
+                    video: { url: anu.result.watermark },
+                    caption: `Download From ${text}`,
+                    footer: 'Press The Button Below',
+                    buttons: buttons,
+                    headerType: 5
+                }
+                style.sendMessage(m.chat, buttonMessage, { quoted: m })
+            }
+            break
+            case 'tiktokmp3': case 'tiktokaudio': {
+                if (!text) throw 'Masukkan Query Link!'
+                m.reply(mess.wait)
+                let anu = await fetchJson(api('zenz', '/downloader/tiktok', { url: text }, 'apikey'))
+                let buttons = [
+                    {buttonId: `tiktoknowm ${text}`, buttonText: {displayText: '► No Watermark'}, type: 1},
+                    {buttonId: `tiktokwm ${text}`, buttonText: {displayText: '► With Watermark'}, type: 1}
+                ]
+                let buttonMessage = {
+                    text: `Download From ${text}`,
+                    footer: 'Press The Button Below',
+                    buttons: buttons,
+                    headerType: 2
+                }
+                let msg = await style.sendMessage(m.chat, buttonMessage, { quoted: m })
+		let { toAudio } = require('./lib/converter')
+		let nganu = await getBuffer(anu.result.nowatermark)
+		let cnvrt = await toAudio(nganu, 'mp4')
+                style.sendMessage(m.chat, { audio: cnvrt, mimetype: 'audio/mpeg'}, { quoted: msg })
+            }
+            break*/
 	        case 'instagram': case 'ig': case 'igdl': {
                 if (!text) throw 'No Query Url!'
                 m.reply(mess.wait)
@@ -1964,7 +1960,7 @@ break*/
                     for (let media of anu.data) style.sendMedia(m.chat, media, '', `Download Url Instagram From ${isUrl(text)[0]}`, m)
                 } else if (/\/stories\/([^\s&]+)/.test(isUrl(text)[0])) {
                     let anu = await fetchJson(api('zenz', '/downloader/instastory', { url: isUrl(text)[0] }, 'apikey'))
-                    style.sendFile(m.chat, anu.media[0].url, '', `Download Url Instagram From ${isUrl(text)[0]}`, m)
+                    style.sendMedia(m.chat, anu.media[0].url, '', `Download Url Instagram From ${isUrl(text)[0]}`, m)
                 }
             }
             break
@@ -2474,10 +2470,9 @@ ${cpus.map((cpu, i) => `${i + 1}. ${cpu.model.trim()} (${cpu.speed} MHZ)\n${Obje
 
 ┌──⭓ *Downloader Menu*
 │
-│⭔ ${prefix}tiktok [url]
-│⭔ ${prefix}tiktokmp3 [url]
-│⭔ ${prefix}tiktokwm [url]
 │⭔ ${prefix}tiktoknowm [url]
+│⭔ ${prefix}tiktokwm [url]
+│⭔ ${prefix}tiktokmp3 [url]
 │⭔ ${prefix}instagram [url]
 │⭔ ${prefix}twitter [url]
 │⭔ ${prefix}twittermp3 [url]
@@ -2490,7 +2485,6 @@ ${cpus.map((cpu, i) => `${i + 1}. ${cpu.model.trim()} (${cpu.speed} MHZ)\n${Obje
 │⭔ ${prefix}umma [url]
 │⭔ ${prefix}joox [query]
 │⭔ ${prefix}soundcloud [url]
-│⭔ ${prefix}telesticker [url]
 │
 └───────⭓
 
@@ -2505,7 +2499,6 @@ ${cpus.map((cpu, i) => `${i + 1}. ${cpu.model.trim()} (${cpu.speed} MHZ)\n${Obje
 │⭔ ${prefix}wikimedia [query]
 │⭔ ${prefix}ytsearch [query]
 │⭔ ${prefix}ringtone [query]
-│⭔ ${prefix}soundcloud [url]
 │
 └───────⭓
 
@@ -2663,8 +2656,6 @@ ${cpus.map((cpu, i) => `${i + 1}. ${cpu.model.trim()} (${cpu.speed} MHZ)\n${Obje
 │⭔ ${prefix}ebinary
 │⭔ ${prefix}dbinary
 │⭔ ${prefix}styletext
-│⭔ ${prefix}smeme
-│⭔ ${prefix}smeme2
 │
 └───────⭓
 
@@ -2743,7 +2734,7 @@ ${cpus.map((cpu, i) => `${i + 1}. ${cpu.model.trim()} (${cpu.speed} MHZ)\n${Obje
 │⭔ ${prefix}setppbot [image]
 │
 └───────⭓`
-                let message = await prepareWAMessageMedia({ image: global.thumb }, { upload: style.waUploadToServer })
+                let message = await prepareWAMessageMedia({ image: fs.readFileSync('./lib/style.jpg') }, { upload: style.waUploadToServer })
                 const template = generateWAMessageFromContent(m.chat, proto.Message.fromObject({
                     templateMessage: {
                         hydratedTemplate: {
