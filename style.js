@@ -76,21 +76,21 @@ module.exports = style = async (style, m, chatUpdate, store) => {
 	
 	
 	         // Database
-        /*try {
-	    let users = global.db.data.data.users[m.sender]
-	    if (typeof users !== 'object') global.db.data.data.users[m.sender] = {}
+        try {
+	    let users = global.db.data.users[m.sender]
+	    if (typeof users !== 'object') global.db.data.users[m.sender] = {}
 	    if (users) {
 		if (!isNumber(users.afkTime)) users.afkTime = -1
 		if (!('banned' in users)) users.banned = false
 		if (!('afkReason' in users)) users.afkReason = ''
-	    } else global.db.data.data.users[m.sender] = {
+	    } else global.db.data.users[m.sender] = {
 		afkTime: -1,
 	    banned: false,
 		afkReason: '',
 	    }
 	     
-	    let chats = global.db.data.data.chats[m.chat]
-	    if (typeof chats !== 'object') global.db.data.data.chats[m.chat] = {}
+	    let chats = global.db.data.chats[m.chat]
+	    if (typeof chats !== 'object') global.db.data.chats[m.chat] = {}
 	    if (chats) {
 		if (!('antionce' in chats)) chats.antionce = true
         if (!('mute' in chats)) chats.mute = false
@@ -100,7 +100,7 @@ module.exports = style = async (style, m, chatUpdate, store) => {
 	    if (!('setPromote' in chat)) chat.setPromote = ''
 	    if (!('setWelcome' in chat)) chat.setWelcome = ''
 	    if (!('setLeave' in chat)) chat.setLeave = ''
-	    } else global.db.data.data.chats[m.chat] = {
+	    } else global.db.data.chats[m.chat] = {
 		antionce: true,
 		mute: false,
 		antispam: true,
@@ -111,20 +111,20 @@ module.exports = style = async (style, m, chatUpdate, store) => {
         setLeave: '',
 	    }
 	    
-            let settings = global.db.data.data.settings[botNumber]
-            if (typeof settings !== 'object') global.db.data.data.settings[botNumber] = {}
+            let settings = global.db.data.settings[botNumber]
+            if (typeof settings !== 'object') global.db.data.settings[botNumber] = {}
             if (settings) {
             if (!('available' in settings)) settings.available = false
             if (!('composing' in settings)) settings.composing = false
             if (!('recording' in settings)) settings.recording = false
-            } else global.db.data.data.settings[botNumber] = {
+            } else global.db.data.settings[botNumber] = {
                 available: false,
                 composing: false,
                 recording: false,
             }
         } catch (err) {
             console.log(err)
-        }*/
+        }
 	
         // Public & Self
         if (!style.public) {
@@ -145,9 +145,9 @@ module.exports = style = async (style, m, chatUpdate, store) => {
 	/*reset limit every 12 hours
         let cron = require('node-cron')
         cron.schedule('00 12 * * *', () => {
-            let user = Object.keys(global.db.data.data.users)
+            let user = Object.keys(global.db.data.users)
             let limitUser = isPremium ? global.limitawal.premium : global.limitawal.free
-            for (let jid of user) global.db.data.data.users[jid].limit = limitUser
+            for (let jid of user) global.db.data.users[jid].limit = limitUser
             console.log('Reseted Limit')
         }, {
             scheduled: true,
@@ -409,8 +409,8 @@ klik https://wa.me/${botNumber.split`@`[0]}`, m, { mentions: [roof.p, roof.p2] }
 	    }
 	    
 	    	    // Afk
-	/*for (let jid of mentionUser) {
-            let user = global.db.data.data.users[jid]
+	for (let jid of mentionUser) {
+            let user = global.db.data.users[jid]
             if (!user) continue
             let afkTime = user.afkTime
             if (!afkTime || afkTime < 0) continue
@@ -423,23 +423,23 @@ During ${clockString(new Date - afkTime)}
         }
 	    
 	if (db.data.users[m.sender].afkTime > -1) {
-            let user = global.db.data.data.users[m.sender]
+            let user = global.db.data.users[m.sender]
             m.reply(`
 You quit AFK${user.afkReason ? ' after ' + user.afkReason : ''}
 During ${clockString(new Date - user.afkTime)}
 `.trim())
             user.afkTime = -1
             user.afkReason = ''
-        }*/
+        }
 	    
         switch(command) {
-	    /*case 'afk': {
-                let user = global.db.data.data.users[m.sender]
+	    case 'afk': {
+                let user = global.db.data.users[m.sender]
                 user.afkTime = + new Date
                 user.afkReason = text
                 m.reply(`${m.pushName} Telah Afk${text ? ': ' + text : ''}`)
             }
-            break*/		
+            break		
         case 'ttc': case 'ttt': case 'tictactoe': {
             let TicTacToe = require("./lib/tictactoe")
             this.game = this.game ? this.game : {}
